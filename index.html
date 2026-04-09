@@ -45,12 +45,6 @@ nav {
 .nav-cta:hover { background: var(--orange-dark); transform: scale(1.03); }
 
 /* HERO */
-#home {
-  min-height: 100vh; padding-top: 64px;
-  background: var(--dark);
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-  text-align: center; position: relative; overflow: hidden;
-}
 .hero-bg {
   position: absolute; inset: 0; opacity: 0.06;
   background-image: repeating-linear-gradient(0deg, transparent, transparent 39px, var(--orange) 39px, var(--orange) 40px),
@@ -61,12 +55,6 @@ nav {
   font-size: 0.7rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
   padding: 0.3rem 1rem; border-radius: 100px; margin-bottom: 1.5rem;
 }
-.hero h1 {
-  font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 10vw, 7.5rem);
-  color: white; line-height: 0.95; letter-spacing: 2px; margin-bottom: 1.5rem;
-}
-.hero h1 span { color: var(--orange); }
-.hero p { color: #aaa; font-size: clamp(1rem, 2.5vw, 1.2rem); max-width: 520px; margin: 0 auto 2.5rem; font-weight: 300; }
 .btn-primary {
   background: var(--orange); color: white; border: none;
   padding: 1rem 2.5rem; border-radius: 100px;
@@ -75,9 +63,6 @@ nav {
   transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 .btn-primary:hover { background: var(--orange-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,107,53,0.35); }
-.hero-scroll { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: #555; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; animation: bounce 2s infinite; }
-.scroll-dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; }
-@keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-6px); } }
 
 /* DISTANZEN */
 #distanzen { padding: 6rem 5%; background: var(--light); }
@@ -149,16 +134,6 @@ input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner
   text-transform: none; letter-spacing: 0; transition: all 0.2s;
 }
 .radio-btn input:checked + label { border-color: var(--orange); background: var(--orange-light); color: var(--orange-dark); font-weight: 700; }
-.slider-wrap { position: relative; }
-input[type=range] {
-  width: 100%; height: 6px; accent-color: var(--orange); cursor: pointer;
-  background: transparent;
-}
-.slider-value {
-  display: inline-block; background: var(--orange); color: white;
-  padding: 0.2rem 0.75rem; border-radius: 100px; font-size: 0.875rem; font-weight: 700;
-  margin-top: 0.5rem;
-}
 .dist-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 .dist-btn { position: relative; }
 .dist-btn input { position: absolute; opacity: 0; width: 0; height: 0; }
@@ -171,6 +146,8 @@ input[type=range] {
 .dist-btn label strong { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--orange); }
 .dist-btn label span { font-size: 0.75rem; color: var(--gray); font-weight: 500; }
 .dist-btn input:checked + label { border-color: var(--orange); background: var(--orange-light); }
+
+/* ─── TAGE-AUSWAHL ─────────────────────────────────────────────── */
 .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.4rem; }
 .day-cb { position: relative; }
 .day-cb input { position: absolute; opacity: 0; width: 0; height: 0; }
@@ -178,9 +155,35 @@ input[type=range] {
   display: flex; align-items: center; justify-content: center;
   width: 100%; aspect-ratio: 1; border: 1.5px solid var(--border); border-radius: 10px;
   font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
-  text-transform: none; letter-spacing: 0;
+  text-transform: none; letter-spacing: 0; user-select: none;
 }
 .day-cb input:checked + label { border-color: var(--orange); background: var(--orange); color: white; }
+/* Grayed out (at max without being selected) */
+.day-cb.disabled label { opacity: 0.35; cursor: not-allowed; }
+
+/* Longrun-Tag Buttons innerhalb ausgewählter Trainingstage */
+.longrun-grid { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.longrun-btn { position: relative; }
+.longrun-btn input { position: absolute; opacity: 0; width: 0; height: 0; }
+.longrun-btn label {
+  display: block; padding: 0.45rem 1rem; border: 1.5px solid var(--border);
+  border-radius: 100px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; text-transform: none; letter-spacing: 0;
+}
+.longrun-btn input:checked + label { border-color: var(--green, #16a34a); background: #dcfce7; color: #166534; font-weight: 700; }
+
+.days-counter {
+  font-size: 0.8rem; font-weight: 700; color: var(--gray);
+  margin-bottom: 0.5rem;
+}
+.days-counter .count { color: var(--orange); }
+.days-counter .needed { color: var(--dark); }
+.days-ok-badge {
+  display: inline-block; background: #dcfce7; color: #166534;
+  font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.5rem;
+  border-radius: 100px; margin-left: 0.5rem; vertical-align: middle;
+}
+
 .wizard-actions { display: flex; gap: 1rem; margin-top: 2rem; justify-content: flex-end; }
 .btn-back { background: white; color: var(--dark); border: 1.5px solid var(--border); padding: 0.75rem 1.75rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
 .btn-back:hover { border-color: var(--dark); }
@@ -359,7 +362,9 @@ input[type=range] {
 
 </div><!-- end home-page -->
 
-<!-- WIZARD PAGE -->
+<!-- ═══════════════════════════════════════════════════════════════
+     WIZARD PAGE
+═══════════════════════════════════════════════════════════════ -->
 <div id="wizard-page">
   <div class="wizard-container">
     <div class="wizard-header">
@@ -372,7 +377,8 @@ input[type=range] {
     <div id="errorBanner" class="error-msg"></div>
 
     <div class="wizard-card">
-      <!-- SCHRITT 1 -->
+
+      <!-- SCHRITT 1 – Persönliche Daten -->
       <div class="wizard-step active" id="step1">
         <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;margin-bottom:0.25rem;">Persönliche Daten</h3>
         <p style="font-size:0.85rem;color:var(--gray);margin-bottom:1.75rem;">Pflichtfelder mit * müssen ausgefüllt werden.</p>
@@ -421,7 +427,7 @@ input[type=range] {
         </div>
       </div>
 
-      <!-- SCHRITT 2 -->
+      <!-- SCHRITT 2 – Trainingsziel -->
       <div class="wizard-step" id="step2">
         <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;margin-bottom:0.25rem;">Trainingsziel</h3>
         <p style="font-size:0.85rem;color:var(--gray);margin-bottom:1.75rem;">Wähle deine Wettbewerbs­distanz und Zielzeit.</p>
@@ -453,17 +459,27 @@ input[type=range] {
         </div>
       </div>
 
-      <!-- SCHRITT 3 -->
+      <!-- SCHRITT 3 – Trainingsplanung -->
       <div class="wizard-step" id="step3">
         <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;margin-bottom:0.25rem;">Trainingsplanung</h3>
         <p style="font-size:0.85rem;color:var(--gray);margin-bottom:1.75rem;">Wie oft und wann möchtest du trainieren?</p>
+
+        <!-- Anzahl Einheiten -->
         <div class="form-group">
           <label>Einheiten pro Woche: <span id="einheitenDisplay" style="color:var(--orange);font-weight:700;">3</span></label>
-          <input type="range" id="einheitenSlider" min="2" max="6" value="3" step="1" oninput="document.getElementById('einheitenDisplay').textContent=this.value">
+          <input type="range" id="einheitenSlider" min="2" max="6" value="3" step="1" oninput="onEinheitenChange()">
         </div>
+
+        <!-- Tagesauswahl – genau N Tage pflicht -->
         <div class="form-group">
-          <label>Trainingstage <span class="opt">(optional – Mehrfachauswahl)</span></label>
-          <div class="days-grid">
+          <label>
+            Trainingstage *
+            <span id="daysCounterBadge"></span>
+          </label>
+          <div class="days-counter" id="daysCounterText">
+            Bitte wähle genau <span class="needed" id="daysNeeded">3</span> Tage.
+          </div>
+          <div class="days-grid" id="daysGrid">
             <div class="day-cb"><input type="checkbox" id="d-mo" value="Mo"><label for="d-mo">Mo</label></div>
             <div class="day-cb"><input type="checkbox" id="d-di" value="Di"><label for="d-di">Di</label></div>
             <div class="day-cb"><input type="checkbox" id="d-mi" value="Mi"><label for="d-mi">Mi</label></div>
@@ -472,30 +488,29 @@ input[type=range] {
             <div class="day-cb"><input type="checkbox" id="d-sa" value="Sa"><label for="d-sa">Sa</label></div>
             <div class="day-cb"><input type="checkbox" id="d-so" value="So"><label for="d-so">So</label></div>
           </div>
+          <div class="field-error-text" id="err-tage">Bitte wähle genau die angegebene Anzahl an Trainingstagen.</div>
         </div>
-        <div class="form-group">
-          <label>Long-Run-Tag <span class="opt">(optional)</span></label>
-          <select id="longRunTag">
-            <option value="">– Nicht festlegen –</option>
-            <option value="Mo">Montag</option>
-            <option value="Di">Dienstag</option>
-            <option value="Mi">Mittwoch</option>
-            <option value="Do">Donnerstag</option>
-            <option value="Fr">Freitag</option>
-            <option value="Sa" selected>Samstag</option>
-            <option value="So">Sonntag</option>
-          </select>
+
+        <!-- Long-Run-Tag: nur aus ausgewählten Tagen wählbar -->
+        <div class="form-group" id="longrunGroup" style="display:none;">
+          <label>Longrun-Tag <span class="opt">(aus deinen Trainingstagen)</span></label>
+          <div class="longrun-grid" id="longrunGrid"></div>
+          <div class="field-error-text" id="err-longrun">Bitte wähle einen Longrun-Tag.</div>
         </div>
+
         <div class="wizard-actions">
           <button class="btn-back" onclick="nextStep(2)">← Zurück</button>
           <button class="btn-next" style="background:var(--dark);" onclick="generatePlan()">Plan erstellen ✓</button>
         </div>
       </div>
+
     </div>
   </div>
 </div>
 
-<!-- RESULT PAGE -->
+<!-- ═══════════════════════════════════════════════════════════════
+     RESULT PAGE
+═══════════════════════════════════════════════════════════════ -->
 <div id="result-page">
   <div class="result-container">
     <div class="result-header">
@@ -514,95 +529,227 @@ input[type=range] {
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════════════ -->
 <script>
-// ─── TRAININGSPLÄNE ───────────────────────────────────────────────
-let PLAENE = [];
+// ─── KONSTANTEN ──────────────────────────────────────────────────
+const TAGE_NAMEN   = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+const TAGE_LANG    = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+const DIST_LABELS  = { '5km':'5 km','10km':'10 km','halbmarathon':'Halbmarathon','marathon':'Marathon' };
+const ZEIT_KONFIG  = {
+  '5km':         { min:15,  max:45,  default:30  },
+  '10km':        { min:35,  max:80,  default:55  },
+  'halbmarathon':{ min:80,  max:180, default:120 },
+  'marathon':    { min:180, max:360, default:240 }
+};
+const BADGE_KLASSEN = {
+  'Ruhetag':'badge-rest','Dauerlauf':'badge-dauerlauf','Intervall':'badge-intervall',
+  'Long Run':'badge-longrun','Regeneration':'badge-regeneration','Fahrtspiel':'badge-fahrtspiel'
+};
+
+// ─── STATE ───────────────────────────────────────────────────────
+let PLAENE       = [];
+let currentStep  = 1;
+let userData     = {};
+let selectedPlan = null;
+
+// ─── JSON LADEN & KONVERTIEREN ───────────────────────────────────
+/**
+ * Konvertiert einen Plan aus dem alten Format (feste Wochentage)
+ * in das neue rollenbasierte Format (Tag_1, Tag_2, … Longrun).
+ *
+ * Das neue Format pro Woche:
+ * {
+ *   woche_nr, fokus,
+ *   einheiten: [
+ *     { rolle:"Tag_1", typ, dauer_min, distanz_km, beschreibung },
+ *     { rolle:"Tag_2", ... },
+ *     { rolle:"Longrun", ... }
+ *   ]
+ * }
+ *
+ * Pläne, die bereits das neue Format haben (kein `.tage`-Array),
+ * werden unverändert durchgereicht.
+ */
+function convertPlanFormat(plan) {
+  const converted = { ...plan };
+  converted.wochen_plan = plan.wochen_plan.map(woche => {
+    // Bereits im neuen Format?
+    if (woche.einheiten) return woche;
+
+    const activeTage = woche.tage.filter(t => t.typ !== 'Ruhetag');
+
+    // Long-Run-Position ermitteln: explizit oder letzter aktiver Tag
+    const explicitLR = activeTage.findIndex(t => t.typ === 'Long Run');
+    const lrPos      = explicitLR >= 0 ? explicitLR : activeTage.length - 1;
+
+    const einheiten = activeTage.map((tag, i) => ({
+      rolle      : i === lrPos ? 'Longrun' : `Tag_${i + 1}`,
+      typ        : tag.typ,
+      dauer_min  : tag.dauer_min  ?? tag.dauer    ?? 0,
+      distanz_km : tag.distanz_km ?? tag.distanz  ?? 0,
+      beschreibung: tag.beschreibung || ''
+    }));
+
+    return { woche_nr: woche.woche_nr, fokus: woche.fokus, einheiten };
+  });
+  return converted;
+}
 
 fetch('training_plans.json')
   .then(r => r.json())
   .then(data => {
-    const fMap = {'anfaenger':'Anfänger','fortgeschritten':'Fortgeschritten','profi':'Profi'};
-    const dMap = {'5k':'5km','10k':'10km'};
-    PLAENE = data.map(p => ({
-      ...p,
-      fitnesslevel: fMap[p.fitnesslevel] || p.fitnesslevel,
-      distanz: dMap[p.distanz] || p.distanz,
-      wochen_plan: p.wochen_plan.map(w => ({
-        ...w,
-        tage: w.tage.map(t => ({
-          ...t,
-          dauer: t.dauer_min ?? t.dauer,
-          distanz: t.distanz_km ?? t.distanz
-        }))
-      }))
-    }));
+    const fMap = { 'anfaenger':'Anfänger','fortgeschritten':'Fortgeschritten','profi':'Profi' };
+    const dMap = { '5k':'5km','10k':'10km' };
+    PLAENE = data.map(p => {
+      const normalized = {
+        ...p,
+        fitnesslevel: fMap[p.fitnesslevel] || p.fitnesslevel,
+        distanz:      dMap[p.distanz]       || p.distanz
+      };
+      return convertPlanFormat(normalized);
+    });
   })
   .catch(e => console.error('JSON konnte nicht geladen werden:', e));
-  
-// ─── HILFSFUNKTIONEN ──────────────────────────────────────────────
-const TAGE_NAMEN = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-const TAGE_LANG = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
-let currentStep = 1;
-let userData = {};
-let selectedPlan = null;
 
-const ZEIT_KONFIG = {
-  '5km':         { min: 15,  max: 45,  default: 30 },
-  '10km':        { min: 35,  max: 80,  default: 55 },
-  'halbmarathon':{ min: 80,  max: 180, default: 120 },
-  'marathon':    { min: 180, max: 360, default: 240 }
-};
-
+// ─── SEITEN ──────────────────────────────────────────────────────
 function showPage(page) {
-  document.getElementById('home-page').style.display = page === 'home' ? 'block' : 'none';
-  document.getElementById('wizard-page').style.display = page === 'wizard' ? 'block' : 'none';
-  document.getElementById('result-page').style.display = page === 'result' ? 'block' : 'none';
+  document.getElementById('home-page'   ).style.display = page === 'home'   ? 'block' : 'none';
+  document.getElementById('wizard-page' ).style.display = page === 'wizard' ? 'block' : 'none';
+  document.getElementById('result-page' ).style.display = page === 'result' ? 'block' : 'none';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (page === 'wizard') {
-    currentStep = 1;
-    showStep(1);
-  }
+  if (page === 'wizard') { currentStep = 1; showStep(1); resetWizard(); }
 }
 
 function showStep(n) {
   document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
   document.getElementById('step' + n).classList.add('active');
   document.getElementById('progressBar').style.width = (n / 3 * 100) + '%';
-  document.getElementById('stepLabel').textContent = 'Schritt ' + n + ' von 3';
+  document.getElementById('stepLabel').textContent   = 'Schritt ' + n + ' von 3';
+  document.getElementById('errorBanner').style.display = 'none';
   currentStep = n;
 }
 
+function resetWizard() {
+  // Formularfelder zurücksetzen – Tage-Checkboxen entkoppeln
+  document.querySelectorAll('.day-cb input').forEach(cb => { cb.checked = false; });
+  updateDaysUI();
+}
+
+// ─── SCHRITT 2: ZEIT + WOCHEN ─────────────────────────────────────
 function updateZeit() {
   const dist = document.querySelector('input[name="distanz"]:checked')?.value || '5km';
-  const cfg = ZEIT_KONFIG[dist] || ZEIT_KONFIG['5km'];
-  const slider = document.getElementById('zeitSlider');
-  const v = parseInt(slider.value);
-  const min = Math.floor(v);
-  const sec = Math.round((v - min) * 60);
-  document.getElementById('zeitDisplay').textContent = min + ':' + String(sec).padStart(2, '0');
+  const cfg  = ZEIT_KONFIG[dist] || ZEIT_KONFIG['5km'];
+  const v    = parseInt(document.getElementById('zeitSlider').value);
+  const h    = Math.floor(v / 60);
+  const m    = v % 60;
+  document.getElementById('zeitDisplay').textContent = h > 0
+    ? h + ':' + String(m).padStart(2,'0') + ' h'
+    : m + ':00';
 }
 
 function updateWochen() {
   document.getElementById('wochenDisplay').textContent = document.getElementById('wochenSlider').value + ' Wochen';
 }
 
-// Distanz-Buttons aktualisieren den Zeit-Slider
 document.querySelectorAll('input[name="distanz"]').forEach(r => {
   r.addEventListener('change', () => {
     const cfg = ZEIT_KONFIG[r.value];
-    const slider = document.getElementById('zeitSlider');
-    slider.min = cfg.min;
-    slider.max = cfg.max;
-    slider.value = cfg.default;
+    const sl  = document.getElementById('zeitSlider');
+    sl.min = cfg.min; sl.max = cfg.max; sl.value = cfg.default;
     updateZeit();
   });
 });
 
+// ─── SCHRITT 3: EINHEITEN + TAGE-LOGIK ──────────────────────────
+function onEinheitenChange() {
+  const n = parseInt(document.getElementById('einheitenSlider').value);
+  document.getElementById('einheitenDisplay').textContent = n;
+  document.getElementById('daysNeeded').textContent       = n;
+
+  // Zu viele Tage deselektieren
+  const checked = [...document.querySelectorAll('.day-cb input:checked')];
+  if (checked.length > n) {
+    // Die letzten (überzähligen) Häkchen entfernen
+    checked.slice(n).forEach(cb => { cb.checked = false; });
+  }
+  updateDaysUI();
+}
+
+function updateDaysUI() {
+  const n         = parseInt(document.getElementById('einheitenSlider').value);
+  const checkedCbs= [...document.querySelectorAll('.day-cb input:checked')];
+  const count     = checkedCbs.length;
+  const atMax     = count >= n;
+
+  // Deaktiviere nicht-ausgewählte Tage wenn bereits n Tage gewählt
+  document.querySelectorAll('.day-cb').forEach(wrapper => {
+    const cb = wrapper.querySelector('input');
+    if (!cb.checked && atMax) {
+      wrapper.classList.add('disabled');
+      cb.disabled = true;
+    } else {
+      wrapper.classList.remove('disabled');
+      cb.disabled = false;
+    }
+  });
+
+  // Counter-Text
+  const counterEl = document.getElementById('daysCounterText');
+  if (count === 0) {
+    counterEl.innerHTML = `Bitte wähle genau <span class="needed">${n}</span> Tage.`;
+  } else if (count < n) {
+    counterEl.innerHTML = `<span class="count">${count}</span> von <span class="needed">${n}</span> Tagen gewählt – noch ${n - count} weitere.`;
+  } else {
+    counterEl.innerHTML = `✓ <span class="count">${count}</span> Tage ausgewählt.`;
+  }
+
+  // Badge
+  const badge = document.getElementById('daysCounterBadge');
+  badge.innerHTML = count === n ? '<span class="days-ok-badge">✓ Vollständig</span>' : '';
+
+  // Longrun-Auswahl aktualisieren
+  updateLongrunUI(checkedCbs.map(cb => cb.value));
+}
+
+function updateLongrunUI(selectedDays) {
+  const group = document.getElementById('longrunGroup');
+  const grid  = document.getElementById('longrunGrid');
+
+  if (selectedDays.length === 0) {
+    group.style.display = 'none';
+    return;
+  }
+  group.style.display = 'block';
+
+  // Aktuell gewählter Longrun-Wert
+  const currentLR = document.querySelector('input[name="longrun"]:checked')?.value;
+
+  grid.innerHTML = selectedDays.map(tag => `
+    <div class="longrun-btn">
+      <input type="radio" name="longrun" id="lr-${tag}" value="${tag}"
+        ${tag === currentLR ? 'checked' : ''}>
+      <label for="lr-${tag}">${TAGE_LANG[TAGE_NAMEN.indexOf(tag)]}</label>
+    </div>
+  `).join('');
+
+  // Wenn bisheriger LR-Tag nicht mehr ausgewählt, zurücksetzen
+  if (currentLR && !selectedDays.includes(currentLR)) {
+    const firstBtn = grid.querySelector('input[name="longrun"]');
+    if (firstBtn) firstBtn.checked = true;
+  }
+}
+
+// Event-Listener für Tage-Checkboxen
+document.getElementById('daysGrid').addEventListener('change', () => updateDaysUI());
+
+// ─── VALIDIERUNG ─────────────────────────────────────────────────
 function validate1() {
   let ok = true;
-  const groesse = parseInt(document.getElementById('groesse').value);
-  const gewicht = parseInt(document.getElementById('gewicht').value);
-  const geschlecht = document.querySelector('input[name="geschlecht"]:checked');
+  const groesse   = parseInt(document.getElementById('groesse').value);
+  const gewicht   = parseInt(document.getElementById('gewicht').value);
+  const geschlecht= document.querySelector('input[name="geschlecht"]:checked');
 
   const showErr = (id, show) => {
     document.getElementById('err-' + id).style.display = show ? 'block' : 'none';
@@ -610,9 +757,9 @@ function validate1() {
     if (el) el.classList.toggle('field-error', show);
   };
 
-  if (!groesse || groesse < 140 || groesse > 220) { showErr('groesse', true); ok = false; } else showErr('groesse', false);
-  if (!gewicht || gewicht < 40 || gewicht > 200) { showErr('gewicht', true); ok = false; } else showErr('gewicht', false);
-  if (!geschlecht) { showErr('geschlecht', true); ok = false; } else showErr('geschlecht', false);
+  if (!groesse  || groesse  < 140 || groesse  > 220) { showErr('groesse',   true);  ok = false; } else showErr('groesse',   false);
+  if (!gewicht  || gewicht  < 40  || gewicht  > 200) { showErr('gewicht',   true);  ok = false; } else showErr('gewicht',   false);
+  if (!geschlecht)                                    { showErr('geschlecht',true);  ok = false; } else showErr('geschlecht',false);
   return ok;
 }
 
@@ -622,64 +769,69 @@ function validate2() {
   return !!dist;
 }
 
+function validate3() {
+  let ok = true;
+  const n       = parseInt(document.getElementById('einheitenSlider').value);
+  const checked = [...document.querySelectorAll('.day-cb input:checked')];
+  const lrSel   = document.querySelector('input[name="longrun"]:checked');
+  const errTage = document.getElementById('err-tage');
+  const errLR   = document.getElementById('err-longrun');
+
+  if (checked.length !== n) {
+    errTage.style.display = 'block';
+    ok = false;
+  } else {
+    errTage.style.display = 'none';
+  }
+
+  if (!lrSel) {
+    errLR.style.display = 'block';
+    ok = false;
+  } else {
+    errLR.style.display = 'none';
+  }
+  return ok;
+}
+
 function nextStep(n) {
   const banner = document.getElementById('errorBanner');
   banner.style.display = 'none';
+
   if (n === 2 && !validate1()) {
     banner.textContent = 'Bitte fülle alle Pflichtfelder korrekt aus.';
-    banner.style.display = 'block';
-    return;
+    banner.style.display = 'block'; return;
   }
   if (n === 3 && !validate2()) {
     banner.textContent = 'Bitte wähle deine Zieldistanz.';
-    banner.style.display = 'block';
-    return;
+    banner.style.display = 'block'; return;
   }
   showStep(n);
 }
 
-// ─── MATCHING ────────────────────────────────────────────────────
-function matchPlan(dist, zielzeit, wochen, fitness, einheiten) {
-  const pool = PLAENE.filter(p => p.distanz === dist);
-  if (!pool.length) return PLAENE[0];
-
-  const fitnessMap = { 'Anfänger': 0, 'Fortgeschritten': 1, 'Profi': 2 };
-  const userFit = fitnessMap[fitness] ?? 0;
-
-  const scored = pool.map(p => {
-    const midzeit = (p.zielzeit_min + p.zielzeit_max) / 2;
-    const zeitRange = (p.zielzeit_max - p.zielzeit_min) || 1;
-    const zeitNaehe = Math.max(0, 1 - Math.abs(zielzeit - midzeit) / zeitRange);
-
-    const planFit = fitnessMap[p.fitnesslevel] ?? 0;
-    const fitDiff = Math.abs(userFit - planFit);
-    const fitScore = fitDiff === 0 ? 1 : fitDiff === 1 ? 0.5 : 0;
-
-    const einheitNaehe = Math.max(0, 1 - Math.abs(einheiten - p.einheiten_pro_woche) / 4);
-    const wochenNaehe = Math.max(0, 1 - Math.abs(wochen - p.wochen) / 12);
-
-    const score = zeitNaehe * 0.4 + fitScore * 0.3 + einheitNaehe * 0.2 + wochenNaehe * 0.1;
-    return { plan: p, score };
-  });
-
-  scored.sort((a, b) => b.score - a.score);
-  return scored[0].plan;
-}
-
+// ─── PLAN GENERIEREN ─────────────────────────────────────────────
 function generatePlan() {
+  if (!validate3()) {
+    const banner = document.getElementById('errorBanner');
+    banner.textContent = 'Bitte wähle genau die richtige Anzahl Trainingstage und deinen Longrun-Tag.';
+    banner.style.display = 'block'; return;
+  }
+
+  const trainingstage = [...document.querySelectorAll('.day-cb input:checked')].map(c => c.value);
+  const longRunTag    = document.querySelector('input[name="longrun"]:checked')?.value;
+
   userData = {
-    groesse: parseInt(document.getElementById('groesse').value),
-    gewicht: parseInt(document.getElementById('gewicht').value),
-    geschlecht: document.querySelector('input[name="geschlecht"]:checked')?.value,
-    alter: document.getElementById('alter').value || null,
-    ruhepuls: document.getElementById('ruhepuls').value || null,
-    fitness: document.querySelector('input[name="fitness"]:checked')?.value || 'Anfänger',
-    distanz: document.querySelector('input[name="distanz"]:checked')?.value,
-    zielzeit: parseInt(document.getElementById('zeitSlider').value),
-    wochen: parseInt(document.getElementById('wochenSlider').value),
-    einheiten: parseInt(document.getElementById('einheitenSlider').value),
-    trainingstage: [...document.querySelectorAll('.day-cb input:checked')].map(c => c.value),
-    longRunTag: document.getElementById('longRunTag').value
+    groesse     : parseInt(document.getElementById('groesse').value),
+    gewicht     : parseInt(document.getElementById('gewicht').value),
+    geschlecht  : document.querySelector('input[name="geschlecht"]:checked')?.value,
+    alter       : document.getElementById('alter').value    || null,
+    ruhepuls    : document.getElementById('ruhepuls').value || null,
+    fitness     : document.querySelector('input[name="fitness"]:checked')?.value || 'Anfänger',
+    distanz     : document.querySelector('input[name="distanz"]:checked')?.value,
+    zielzeit    : parseInt(document.getElementById('zeitSlider').value),
+    wochen      : parseInt(document.getElementById('wochenSlider').value),
+    einheiten   : parseInt(document.getElementById('einheitenSlider').value),
+    trainingstage,
+    longRunTag
   };
 
   selectedPlan = matchPlan(userData.distanz, userData.zielzeit, userData.wochen, userData.fitness, userData.einheiten);
@@ -687,45 +839,78 @@ function generatePlan() {
   showPage('result');
 }
 
-function formatZeit(min) {
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  return h > 0 ? h + ':' + String(m).padStart(2, '0') + ' h' : m + ' Min';
+// ─── PLAN-MATCHING ───────────────────────────────────────────────
+/**
+ * Scoring-Gewichte:
+ *   Zielzeit      40 % – wie nah liegt die Zielzeit im Plan-Bereich?
+ *   Fitnesslevel  30 % – exakt=1, ±1 Stufe=0.5, ±2 Stufen=0
+ *   Einheiten     20 % – wie nah ist die Einheitenzahl?
+ *   Wochen        10 % – wie nah ist die Planlänge?
+ *
+ * Neue Pläne in training_plans.json müssen dieselben Felder haben:
+ *   distanz, fitnesslevel, zielzeit_min, zielzeit_max,
+ *   wochen, einheiten_pro_woche
+ */
+function matchPlan(dist, zielzeit, wochen, fitness, einheiten) {
+  const pool = PLAENE.filter(p => p.distanz === dist);
+  if (!pool.length) return PLAENE[0];
+
+  const fitnessMap = { 'Anfänger':0,'Fortgeschritten':1,'Profi':2 };
+  const userFit    = fitnessMap[fitness] ?? 0;
+
+  const scored = pool.map(p => {
+    const midzeit   = (p.zielzeit_min + p.zielzeit_max) / 2;
+    const zeitRange = (p.zielzeit_max - p.zielzeit_min) || 1;
+    const zeitScore = Math.max(0, 1 - Math.abs(zielzeit - midzeit) / zeitRange);
+
+    const planFit   = fitnessMap[p.fitnesslevel] ?? 0;
+    const fitDiff   = Math.abs(userFit - planFit);
+    const fitScore  = fitDiff === 0 ? 1 : fitDiff === 1 ? 0.5 : 0;
+
+    const einScore  = Math.max(0, 1 - Math.abs(einheiten - p.einheiten_pro_woche) / 4);
+    const wocScore  = Math.max(0, 1 - Math.abs(wochen    - p.wochen)              / 12);
+
+    const score = zeitScore * 0.4 + fitScore * 0.3 + einScore * 0.2 + wocScore * 0.1;
+    return { plan: p, score };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored[0].plan;
 }
 
-const DIST_LABELS = { '5km': '5 km', '10km': '10 km', 'halbmarathon': 'Halbmarathon', 'marathon': 'Marathon' };
-
+// ─── PLAN RENDERN ────────────────────────────────────────────────
 function renderResult() {
   const p = selectedPlan;
   const u = userData;
 
-  document.getElementById('resultTitle').textContent = p.name;
+  document.getElementById('resultTitle').textContent    = p.id;
   document.getElementById('resultSubtitle').textContent = `${DIST_LABELS[u.distanz]} · Ziel: ${formatZeit(u.zielzeit)} · ${p.wochen} Wochen`;
 
   const summaryItems = [
-    { label: 'Größe', val: u.groesse + ' cm' },
-    { label: 'Gewicht', val: u.gewicht + ' kg' },
-    { label: 'Geschlecht', val: u.geschlecht },
-    ...(u.alter ? [{ label: 'Alter', val: u.alter + ' J.' }] : []),
-    { label: 'Level', val: u.fitness },
-    { label: 'Distanz', val: DIST_LABELS[u.distanz] },
-    { label: 'Zielzeit', val: formatZeit(u.zielzeit) },
-    { label: 'Planlänge', val: p.wochen + ' Wo.' },
-    { label: 'Einheiten', val: u.einheiten + '/Woche' }
+    { label:'Größe',    val: u.groesse  + ' cm' },
+    { label:'Gewicht',  val: u.gewicht  + ' kg' },
+    { label:'Geschlecht',val: u.geschlecht },
+    ...(u.alter ? [{ label:'Alter', val: u.alter + ' J.' }] : []),
+    { label:'Level',    val: u.fitness },
+    { label:'Distanz',  val: DIST_LABELS[u.distanz] },
+    { label:'Zielzeit', val: formatZeit(u.zielzeit) },
+    { label:'Wochen',   val: p.wochen + ' Wo.' },
+    { label:'Einheiten',val: u.einheiten + '/Woche' },
+    { label:'Longrun',  val: TAGE_LANG[TAGE_NAMEN.indexOf(u.longRunTag)] || u.longRunTag }
   ];
 
   document.getElementById('userSummary').innerHTML = summaryItems.map(s =>
     `<div class="summary-pill"><span>${s.label}</span><strong>${s.val}</strong></div>`
   ).join('');
 
-  document.getElementById('planName').textContent = p.name;
-  document.getElementById('planMeta').textContent = `${p.wochen} Wochen · ${p.einheiten_pro_woche} Einheiten/Woche · Niveau: ${p.fitnesslevel}`;
+  document.getElementById('planName').textContent = `${DIST_LABELS[u.distanz]} – ${p.fitnesslevel} – ${p.wochen} Wochen`;
+  document.getElementById('planMeta').textContent = `${p.wochen} Wochen · ${p.einheiten_pro_woche} Einheiten/Woche · Niveau: ${p.fitnesslevel} · Longrun: ${TAGE_LANG[TAGE_NAMEN.indexOf(u.longRunTag)] || u.longRunTag}`;
 
   const acc = document.getElementById('accordionWrap');
   acc.innerHTML = '';
 
   p.wochen_plan.forEach((woche, wi) => {
-    const tageToUse = adaptTage(woche.tage, wi);
+    const tageRendered = buildWeekDays(woche);
     const div = document.createElement('div');
     div.className = 'week-item' + (wi === 0 ? ' open' : '');
     div.innerHTML = `
@@ -734,58 +919,59 @@ function renderResult() {
         <span class="week-chevron">▼</span>
       </div>
       <div class="week-body">
-        ${tageToUse.map((tag, ti) => renderTag(tag, ti)).join('')}
+        ${tageRendered.map((tag, ti) => renderTag(tag, ti)).join('')}
       </div>`;
     acc.appendChild(div);
   });
 }
 
-function adaptTage(originalTage, wochenIndex) {
-  const u = userData;
-  let tage = [...originalTage];
+/**
+ * Baut aus den abstrakten Einheiten-Rollen eine vollständige 7-Tage-Liste.
+ * Die Reihenfolge der ausgewählten Trainingstage (Mo-So, sortiert) entspricht
+ * den Rollen Tag_1, Tag_2, …, Longrun.
+ * Der Longrun wird dabei auf den explizit gewählten Longrun-Tag gelegt.
+ */
+function buildWeekDays(woche) {
+  const u           = userData;
+  // 7-Tage-Array mit Ruhetagen initialisieren
+  const result      = TAGE_NAMEN.map(() => ({
+    typ:'Ruhetag', dauer_min:0, distanz_km:0, beschreibung:'Ruhetag – Erholung und Regeneration'
+  }));
 
-  if (u.trainingstage && u.trainingstage.length > 0) {
-    const newTage = TAGE_NAMEN.map(d => {
-      if (u.trainingstage.includes(d)) {
-        const trainingsTage = tage.filter(t => t.typ !== 'Ruhetag');
-        return trainingsTage.length > 0 ? trainingsTage.shift() : { typ: 'Ruhetag', dauer: 0, distanz: 0, beschreibung: 'Erholung' };
-      } else {
-        return { typ: 'Ruhetag', dauer: 0, distanz: 0, beschreibung: 'Erholung' };
-      }
-    });
-    tage = newTage;
+  const einheiten   = woche.einheiten || [];
+  // Trainingstage nach Wochenreihenfolge (TAGE_NAMEN) sortieren
+  const sortedTage  = [...u.trainingstage].sort((a, b) =>
+    TAGE_NAMEN.indexOf(a) - TAGE_NAMEN.indexOf(b));
+
+  // Longrun-Rolle separat herausziehen
+  const lrEinheit   = einheiten.find(e => e.rolle === 'Longrun');
+  const normEinheiten = einheiten.filter(e => e.rolle !== 'Longrun');
+
+  // Nicht-Longrun-Tage: alle sortedTage außer dem LR-Tag
+  const nonLrTage   = sortedTage.filter(t => t !== u.longRunTag);
+
+  // Normale Einheiten auf Nicht-LR-Tage mappen
+  normEinheiten.forEach((einheit, i) => {
+    const tagKuerzel = nonLrTage[i];
+    if (!tagKuerzel) return;
+    const idx = TAGE_NAMEN.indexOf(tagKuerzel);
+    if (idx >= 0) result[idx] = einheit;
+  });
+
+  // Longrun auf den gewählten LR-Tag setzen
+  if (lrEinheit && u.longRunTag) {
+    const idx = TAGE_NAMEN.indexOf(u.longRunTag);
+    if (idx >= 0) result[idx] = lrEinheit;
   }
 
-  if (u.longRunTag) {
-    const longRunIdx = TAGE_NAMEN.indexOf(u.longRunTag);
-    if (longRunIdx >= 0) {
-      const currentLR = tage.findIndex(t => t.typ === 'Long Run');
-      if (currentLR >= 0 && currentLR !== longRunIdx) {
-        const lr = tage[currentLR];
-        const displaced = tage[longRunIdx];
-        tage[longRunIdx] = lr;
-        tage[currentLR] = displaced;
-      }
-    }
-  }
-
-  return tage;
+  return result;
 }
 
-const BADGE_KLASSEN = {
-  'Ruhetag': 'badge-rest',
-  'Dauerlauf': 'badge-dauerlauf',
-  'Intervall': 'badge-intervall',
-  'Long Run': 'badge-longrun',
-  'Regeneration': 'badge-regeneration',
-  'Fahrtspiel': 'badge-fahrtspiel'
-};
-
 function renderTag(tag, ti) {
-  const badge = BADGE_KLASSEN[tag.typ] || 'badge-rest';
+  const badge   = BADGE_KLASSEN[tag.typ] || 'badge-rest';
   const details = tag.typ === 'Ruhetag'
     ? `<small>${tag.beschreibung}</small>`
-    : `<strong>${tag.dauer} Min · ${tag.distanz} km</strong><small>${tag.beschreibung}</small>`;
+    : `<strong>${tag.dauer_min} Min · ${tag.distanz_km} km</strong><small>${tag.beschreibung}</small>`;
   return `<div class="day-row">
     <div class="day-name">${TAGE_NAMEN[ti]}</div>
     <span class="day-badge ${badge}">${tag.typ}</span>
@@ -797,100 +983,94 @@ function toggleWeek(header) {
   header.parentElement.classList.toggle('open');
 }
 
+function formatZeit(min) {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return h > 0 ? h + ':' + String(m).padStart(2, '0') + ' h' : m + ' Min';
+}
+
 // ─── PDF-EXPORT ──────────────────────────────────────────────────
 function exportPDF() {
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
-  const p = selectedPlan;
-  const u = userData;
+  const doc = new jsPDF({ orientation:'p', unit:'mm', format:'a4' });
+  const p   = selectedPlan;
+  const u   = userData;
   let y = 20;
 
+  // Header
   doc.setFillColor(255, 107, 53);
   doc.rect(0, 0, 210, 35, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(20);
-  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(20); doc.setFont('helvetica','bold');
   doc.text('Fynns Laufcoach – Dein Trainingsplan', 15, 22);
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.text(p.name, 15, 30);
+  doc.setFontSize(10); doc.setFont('helvetica','normal');
+  doc.text(`${DIST_LABELS[u.distanz]} · ${p.fitnesslevel} · ${p.wochen} Wochen`, 15, 30);
 
   y = 50;
-  doc.setTextColor(30, 30, 30);
-  doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Meine Angaben', 15, y);
-  y += 8;
+  doc.setTextColor(30,30,30);
+  doc.setFontSize(14); doc.setFont('helvetica','bold');
+  doc.text('Meine Angaben', 15, y); y += 8;
 
-  doc.setFontSize(9);
-  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9); doc.setFont('helvetica','normal');
   const infos = [
-    ['Größe:', u.groesse + ' cm', 'Gewicht:', u.gewicht + ' kg'],
-    ['Geschlecht:', u.geschlecht, 'Fitnesslevel:', u.fitness],
-    ['Distanz:', DIST_LABELS[u.distanz], 'Zielzeit:', formatZeit(u.zielzeit)],
-    ['Planlänge:', p.wochen + ' Wochen', 'Einheiten/Woche:', u.einheiten + 'x'],
+    ['Größe:',     u.groesse  + ' cm',           'Gewicht:',    u.gewicht + ' kg'],
+    ['Geschlecht:',u.geschlecht,                  'Level:',      u.fitness],
+    ['Distanz:',   DIST_LABELS[u.distanz],         'Zielzeit:',  formatZeit(u.zielzeit)],
+    ['Wochen:',    p.wochen   + ' Wo.',            'Einheiten:', u.einheiten + 'x/Woche'],
+    ['Longrun:',   TAGE_LANG[TAGE_NAMEN.indexOf(u.longRunTag)] || u.longRunTag, '', ''],
     ...(u.alter ? [['Alter:', u.alter + ' J.', '', '']] : [])
   ];
   infos.forEach(row => {
-    doc.setFont('helvetica', 'bold');
-    doc.text(row[0], 15, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(row[1], 45, y);
+    doc.setFont('helvetica','bold');  doc.text(row[0], 15, y);
+    doc.setFont('helvetica','normal');doc.text(row[1], 50, y);
     if (row[2]) {
-      doc.setFont('helvetica', 'bold');
-      doc.text(row[2], 105, y);
-      doc.setFont('helvetica', 'normal');
-      doc.text(row[3], 135, y);
+      doc.setFont('helvetica','bold');  doc.text(row[2], 105, y);
+      doc.setFont('helvetica','normal');doc.text(row[3], 140, y);
     }
     y += 6;
   });
 
-  y += 6;
-  doc.setDrawColor(255, 107, 53);
-  doc.setLineWidth(0.5);
-  doc.line(15, y, 195, y);
-  y += 8;
+  y += 4;
+  doc.setDrawColor(255,107,53); doc.setLineWidth(0.5);
+  doc.line(15, y, 195, y); y += 8;
 
+  // Wochen
   p.wochen_plan.forEach((woche, wi) => {
     if (y > 260) { doc.addPage(); y = 20; }
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(255, 107, 53);
-    doc.text(`Woche ${wi + 1}: ${woche.fokus}`, 15, y);
-    y += 2;
-    doc.setDrawColor(255, 107, 53);
-    doc.setLineWidth(0.3);
-    doc.line(15, y + 1, 195, y + 1);
-    y += 5;
+    doc.setFontSize(12); doc.setFont('helvetica','bold');
+    doc.setTextColor(255,107,53);
+    doc.text(`Woche ${wi + 1}: ${woche.fokus}`, 15, y); y += 2;
+    doc.setDrawColor(255,107,53); doc.setLineWidth(0.3);
+    doc.line(15, y + 1, 195, y + 1); y += 5;
 
-    const tage = adaptTage(woche.tage, wi);
+    const tage = buildWeekDays(woche);
     tage.forEach((tag, ti) => {
       if (y > 268) { doc.addPage(); y = 20; }
-      doc.setFontSize(8.5);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(60, 60, 60);
+      doc.setFontSize(8.5); doc.setFont('helvetica','bold');
+      doc.setTextColor(60,60,60);
       doc.text(TAGE_LANG[ti] + ':', 15, y);
-      doc.setFont('helvetica', 'normal');
+      doc.setFont('helvetica','normal');
       const detail = tag.typ === 'Ruhetag'
         ? `${tag.typ} – ${tag.beschreibung}`
-        : `${tag.typ} – ${tag.dauer} Min, ${tag.distanz} km – ${tag.beschreibung}`;
-      doc.text(detail, 42, y);
-      y += 5.5;
+        : `${tag.typ} – ${tag.dauer_min} Min, ${tag.distanz_km} km – ${tag.beschreibung}`;
+      const lines = doc.splitTextToSize(detail, 148);
+      doc.text(lines, 45, y);
+      y += lines.length > 1 ? lines.length * 4.5 + 1 : 5.5;
     });
     y += 3;
   });
 
-  doc.setFontSize(8);
-  doc.setTextColor(150, 150, 150);
+  doc.setFontSize(8); doc.setTextColor(150,150,150);
   doc.text('© Fynns Laufcoach – Laufe weiter, laufe besser.', 15, 290);
 
-  const dist = u.distanz.replace('halbmarathon', 'hm');
-  doc.save(`fynns-laufcoach-${dist}-plan.pdf`);
+  const distName = u.distanz.replace('halbmarathon','hm');
+  doc.save(`fynns-laufcoach-${distName}-plan.pdf`);
 }
 
-// Init
+// ─── INIT ─────────────────────────────────────────────────────────
 updateZeit();
 updateWochen();
+onEinheitenChange();
 </script>
 </body>
 </html>
