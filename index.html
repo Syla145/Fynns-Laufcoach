@@ -184,6 +184,79 @@ input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner
   border-radius: 100px; margin-left: 0.5rem; vertical-align: middle;
 }
 
+/* ─── TOGGLE SWITCH (Planlänge / Wettkampfdatum) ─────────────── */
+.toggle-switch-wrap {
+  display: flex; align-items: center; gap: 0; margin-bottom: 1rem;
+  background: var(--light); border-radius: 100px; padding: 4px;
+  border: 1px solid var(--border); width: fit-content;
+}
+.toggle-opt {
+  padding: 0.4rem 1.1rem; border-radius: 100px; font-size: 0.8rem;
+  font-weight: 600; cursor: pointer; transition: all 0.2s;
+  color: var(--gray); user-select: none;
+}
+.toggle-opt.active { background: var(--orange); color: white; }
+
+/* Datum-Input */
+input[type=date] {
+  width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border);
+  border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+  background: white; color: var(--dark); transition: border-color 0.2s;
+}
+input[type=date]:focus { outline: none; border-color: var(--orange); }
+
+.date-info {
+  margin-top: 0.5rem; font-size: 0.8rem; color: var(--gray);
+  background: var(--light); border-radius: 8px; padding: 0.5rem 0.75rem;
+  display: none;
+}
+.date-info.visible { display: block; }
+.date-info strong { color: var(--orange); }
+
+/* ─── PACE-BADGE im Plan ─────────────────────────────────────── */
+.pace-banner {
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);
+  border-radius: 14px; padding: 1.25rem 1.5rem;
+  display: flex; align-items: center; gap: 1.5rem;
+  margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.pace-item { text-align: center; }
+.pace-item .pace-val {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem;
+  color: white; letter-spacing: 1px; line-height: 1;
+}
+.pace-item .pace-lbl { font-size: 0.65rem; color: rgba(255,255,255,0.75); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+.pace-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.25); }
+
+/* ─── FORTSCHRITT ABHAKEN ────────────────────────────────────── */
+.day-row { cursor: default; position: relative; }
+.day-check {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--border); background: white;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+  font-size: 0.7rem; color: transparent; user-select: none;
+}
+.day-check:hover { border-color: var(--orange); }
+.day-row.done .day-check { background: #16a34a; border-color: #16a34a; color: white; }
+.day-row.done .day-details strong,
+.day-row.done .day-details small { opacity: 0.45; text-decoration: line-through; }
+.day-row.done .day-badge { opacity: 0.4; }
+
+.week-progress {
+  height: 4px; background: var(--border); border-radius: 100px;
+  margin: 0.5rem 1.25rem 0; overflow: hidden;
+}
+.week-progress-bar { height: 100%; background: #16a34a; border-radius: 100px; transition: width 0.4s ease; }
+
+.progress-summary {
+  font-size: 0.75rem; color: var(--gray); padding: 0.4rem 1.25rem 0.6rem;
+}
+.progress-summary .done-count { color: #16a34a; font-weight: 700; }
+
+/* Rest-Zeilen nicht abhakbar */
+.day-row.rest-row .day-check { display: none; }
+
 .wizard-actions { display: flex; gap: 1rem; margin-top: 2rem; justify-content: flex-end; }
 .btn-back { background: white; color: var(--dark); border: 1.5px solid var(--border); padding: 0.75rem 1.75rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
 .btn-back:hover { border-color: var(--dark); }
@@ -448,9 +521,24 @@ input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner
           </div>
         </div>
         <div class="form-group">
-          <label>Planlänge: <span id="wochenDisplay" style="color:var(--orange);font-weight:700;">12 Wochen</span></label>
-          <div class="slider-wrap">
+          <label>Planlänge oder Wettkampfdatum?</label>
+          <div class="toggle-switch-wrap">
+            <div class="toggle-opt active" id="toggleWochen" onclick="switchPlanMode('wochen')">📅 Planlänge</div>
+            <div class="toggle-opt" id="toggleDatum" onclick="switchPlanMode('datum')">🏁 Wettkampfdatum</div>
+          </div>
+
+          <!-- Modus: Planlänge -->
+          <div id="modeWochen">
+            <label style="margin-bottom:0.35rem;">Planlänge: <span id="wochenDisplay" style="color:var(--orange);font-weight:700;">12 Wochen</span></label>
             <input type="range" id="wochenSlider" min="8" max="20" value="12" step="2" oninput="updateWochen()">
+          </div>
+
+          <!-- Modus: Wettkampfdatum -->
+          <div id="modeDatum" style="display:none;">
+            <label style="margin-bottom:0.35rem;">Wettkampfdatum *</label>
+            <input type="date" id="wettkampfDatum" oninput="updateDatumInfo()">
+            <div class="date-info" id="dateInfo"></div>
+            <div class="field-error-text" id="err-datum">Bitte wähle ein Datum in der Zukunft (mind. 8 Wochen).</div>
           </div>
         </div>
         <div class="wizard-actions">
@@ -521,6 +609,7 @@ input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner
     </div>
     <div class="plan-title" id="planName"></div>
     <div class="plan-meta" id="planMeta"></div>
+    <div class="pace-banner" id="paceBanner"></div>
     <div class="accordion" id="accordionWrap"></div>
     <div class="result-actions">
       <button class="btn-new" onclick="showPage('wizard')">← Neuen Plan erstellen</button>
@@ -537,6 +626,7 @@ input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner
 const TAGE_NAMEN   = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 const TAGE_LANG    = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
 const DIST_LABELS  = { '5km':'5 km','10km':'10 km','halbmarathon':'Halbmarathon','marathon':'Marathon' };
+const DIST_KM      = { '5km':5, '10km':10, 'halbmarathon':21.0975, 'marathon':42.195 };
 const ZEIT_KONFIG  = {
   '5km':         { min:15,  max:45,  default:30  },
   '10km':        { min:35,  max:80,  default:55  },
@@ -553,45 +643,25 @@ let PLAENE       = [];
 let currentStep  = 1;
 let userData     = {};
 let selectedPlan = null;
+let planMode     = 'wochen'; // 'wochen' | 'datum'
+// Fortschritt: { "woche_wi_tag_ti": true }
+let progress     = {};
 
 // ─── JSON LADEN & KONVERTIEREN ───────────────────────────────────
-/**
- * Konvertiert einen Plan aus dem alten Format (feste Wochentage)
- * in das neue rollenbasierte Format (Tag_1, Tag_2, … Longrun).
- *
- * Das neue Format pro Woche:
- * {
- *   woche_nr, fokus,
- *   einheiten: [
- *     { rolle:"Tag_1", typ, dauer_min, distanz_km, beschreibung },
- *     { rolle:"Tag_2", ... },
- *     { rolle:"Longrun", ... }
- *   ]
- * }
- *
- * Pläne, die bereits das neue Format haben (kein `.tage`-Array),
- * werden unverändert durchgereicht.
- */
 function convertPlanFormat(plan) {
   const converted = { ...plan };
   converted.wochen_plan = plan.wochen_plan.map(woche => {
-    // Bereits im neuen Format?
     if (woche.einheiten) return woche;
-
     const activeTage = woche.tage.filter(t => t.typ !== 'Ruhetag');
-
-    // Long-Run-Position ermitteln: explizit oder letzter aktiver Tag
     const explicitLR = activeTage.findIndex(t => t.typ === 'Long Run');
     const lrPos      = explicitLR >= 0 ? explicitLR : activeTage.length - 1;
-
-    const einheiten = activeTage.map((tag, i) => ({
+    const einheiten  = activeTage.map((tag, i) => ({
       rolle      : i === lrPos ? 'Longrun' : `Tag_${i + 1}`,
       typ        : tag.typ,
       dauer_min  : tag.dauer_min  ?? tag.dauer    ?? 0,
       distanz_km : tag.distanz_km ?? tag.distanz  ?? 0,
       beschreibung: tag.beschreibung || ''
     }));
-
     return { woche_nr: woche.woche_nr, fokus: woche.fokus, einheiten };
   });
   return converted;
@@ -603,11 +673,7 @@ fetch('training_plans.json')
     const fMap = { 'anfaenger':'Anfänger','fortgeschritten':'Fortgeschritten','profi':'Profi' };
     const dMap = { '5k':'5km','10k':'10km' };
     PLAENE = data.map(p => {
-      const normalized = {
-        ...p,
-        fitnesslevel: fMap[p.fitnesslevel] || p.fitnesslevel,
-        distanz:      dMap[p.distanz]       || p.distanz
-      };
+      const normalized = { ...p, fitnesslevel: fMap[p.fitnesslevel] || p.fitnesslevel, distanz: dMap[p.distanz] || p.distanz };
       return convertPlanFormat(normalized);
     });
   })
@@ -632,15 +698,15 @@ function showStep(n) {
 }
 
 function resetWizard() {
-  // Formularfelder zurücksetzen – Tage-Checkboxen entkoppeln
-  document.querySelectorAll('.day-cb input').forEach(cb => { cb.checked = false; });
+  document.querySelectorAll('.day-cb input').forEach(cb => { cb.checked = false; cb.disabled = false; });
+  document.querySelectorAll('.day-cb').forEach(w => w.classList.remove('disabled'));
   updateDaysUI();
+  progress = {};
 }
 
-// ─── SCHRITT 2: ZEIT + WOCHEN ─────────────────────────────────────
+// ─── SCHRITT 2: DISTANZ → ZEIT-SLIDER ANPASSEN ───────────────────
 function updateZeit() {
   const dist = document.querySelector('input[name="distanz"]:checked')?.value || '5km';
-  const cfg  = ZEIT_KONFIG[dist] || ZEIT_KONFIG['5km'];
   const v    = parseInt(document.getElementById('zeitSlider').value);
   const h    = Math.floor(v / 60);
   const m    = v % 60;
@@ -659,21 +725,100 @@ document.querySelectorAll('input[name="distanz"]').forEach(r => {
     const sl  = document.getElementById('zeitSlider');
     sl.min = cfg.min; sl.max = cfg.max; sl.value = cfg.default;
     updateZeit();
+    if (planMode === 'datum') updateDatumInfo();
   });
 });
+
+// ─── SCHRITT 2: PLAN-MODUS TOGGLE ────────────────────────────────
+function switchPlanMode(mode) {
+  planMode = mode;
+  document.getElementById('toggleWochen').classList.toggle('active', mode === 'wochen');
+  document.getElementById('toggleDatum' ).classList.toggle('active', mode === 'datum');
+  document.getElementById('modeWochen'  ).style.display = mode === 'wochen' ? 'block' : 'none';
+  document.getElementById('modeDatum'   ).style.display = mode === 'datum'  ? 'block' : 'none';
+}
+
+function updateDatumInfo() {
+  const input   = document.getElementById('wettkampfDatum');
+  const infoEl  = document.getElementById('dateInfo');
+  const errEl   = document.getElementById('err-datum');
+  const val     = input.value;
+  if (!val) { infoEl.classList.remove('visible'); return; }
+
+  const today      = new Date(); today.setHours(0,0,0,0);
+  const raceDate   = new Date(val);
+  const diffDays   = Math.round((raceDate - today) / (1000 * 60 * 60 * 24));
+  const diffWeeks  = Math.floor(diffDays / 7);
+
+  if (diffWeeks < 8) {
+    errEl.style.display = 'block';
+    infoEl.classList.remove('visible');
+    return;
+  }
+  errEl.style.display = 'none';
+
+  // Nächste gerade Wochen-Zahl (8–20, Schritt 2)
+  const snapWeeks = Math.min(20, Math.max(8, diffWeeks % 2 === 0 ? diffWeeks : diffWeeks - 1));
+  const startDate = new Date(raceDate);
+  startDate.setDate(startDate.getDate() - snapWeeks * 7);
+  const opts = { day:'2-digit', month:'2-digit', year:'numeric' };
+
+  infoEl.innerHTML = `Startdatum: <strong>${startDate.toLocaleDateString('de-DE', opts)}</strong> &nbsp;·&nbsp; Planlänge: <strong>${snapWeeks} Wochen</strong> &nbsp;·&nbsp; Noch <strong>${diffDays} Tage</strong> bis zum Rennen`;
+  infoEl.classList.add('visible');
+
+  // Wochen-Slider synchronisieren
+  const sl = document.getElementById('wochenSlider');
+  sl.value = snapWeeks;
+  document.getElementById('wochenDisplay').textContent = snapWeeks + ' Wochen';
+}
+
+function getWochenFromInput() {
+  if (planMode === 'wochen') {
+    return parseInt(document.getElementById('wochenSlider').value);
+  }
+  // Aus Datum berechnen
+  const val     = document.getElementById('wettkampfDatum').value;
+  if (!val) return 12;
+  const today   = new Date(); today.setHours(0,0,0,0);
+  const race    = new Date(val);
+  const diffW   = Math.floor((race - today) / (1000 * 60 * 60 * 24 * 7));
+  return Math.min(20, Math.max(8, diffW % 2 === 0 ? diffW : diffW - 1));
+}
+
+// ─── PACE BERECHNUNG ─────────────────────────────────────────────
+function calcPace(distanzLabel, zielMinuten) {
+  const km = DIST_KM[distanzLabel] || 5;
+  const secPerKm = (zielMinuten * 60) / km;
+  const paceMin  = Math.floor(secPerKm / 60);
+  const paceSec  = Math.round(secPerKm % 60);
+  return `${paceMin}:${String(paceSec).padStart(2,'0')}`;
+}
+
+function calcEasyPace(distanzLabel, zielMinuten) {
+  // Easy Pace: ca. 60–70 s/km langsamer als Wettkampftempo
+  const km = DIST_KM[distanzLabel] || 5;
+  const secPerKm = (zielMinuten * 60) / km + 65;
+  const paceMin  = Math.floor(secPerKm / 60);
+  const paceSec  = Math.round(secPerKm % 60);
+  return `${paceMin}:${String(paceSec).padStart(2,'0')}`;
+}
+
+function calcIntervallPace(distanzLabel, zielMinuten) {
+  // Intervall: ca. 15–20 s/km schneller als Wettkampftempo
+  const km = DIST_KM[distanzLabel] || 5;
+  const secPerKm = Math.max(150, (zielMinuten * 60) / km - 18);
+  const paceMin  = Math.floor(secPerKm / 60);
+  const paceSec  = Math.round(secPerKm % 60);
+  return `${paceMin}:${String(paceSec).padStart(2,'0')}`;
+}
 
 // ─── SCHRITT 3: EINHEITEN + TAGE-LOGIK ──────────────────────────
 function onEinheitenChange() {
   const n = parseInt(document.getElementById('einheitenSlider').value);
   document.getElementById('einheitenDisplay').textContent = n;
   document.getElementById('daysNeeded').textContent       = n;
-
-  // Zu viele Tage deselektieren
   const checked = [...document.querySelectorAll('.day-cb input:checked')];
-  if (checked.length > n) {
-    // Die letzten (überzähligen) Häkchen entfernen
-    checked.slice(n).forEach(cb => { cb.checked = false; });
-  }
+  if (checked.length > n) checked.slice(n).forEach(cb => { cb.checked = false; });
   updateDaysUI();
 }
 
@@ -683,80 +828,53 @@ function updateDaysUI() {
   const count     = checkedCbs.length;
   const atMax     = count >= n;
 
-  // Deaktiviere nicht-ausgewählte Tage wenn bereits n Tage gewählt
   document.querySelectorAll('.day-cb').forEach(wrapper => {
     const cb = wrapper.querySelector('input');
-    if (!cb.checked && atMax) {
-      wrapper.classList.add('disabled');
-      cb.disabled = true;
-    } else {
-      wrapper.classList.remove('disabled');
-      cb.disabled = false;
-    }
+    if (!cb.checked && atMax) { wrapper.classList.add('disabled'); cb.disabled = true; }
+    else { wrapper.classList.remove('disabled'); cb.disabled = false; }
   });
 
-  // Counter-Text
   const counterEl = document.getElementById('daysCounterText');
-  if (count === 0) {
-    counterEl.innerHTML = `Bitte wähle genau <span class="needed">${n}</span> Tage.`;
-  } else if (count < n) {
-    counterEl.innerHTML = `<span class="count">${count}</span> von <span class="needed">${n}</span> Tagen gewählt – noch ${n - count} weitere.`;
-  } else {
-    counterEl.innerHTML = `✓ <span class="count">${count}</span> Tage ausgewählt.`;
-  }
+  if (count === 0)      counterEl.innerHTML = `Bitte wähle genau <span class="needed">${n}</span> Tage.`;
+  else if (count < n)   counterEl.innerHTML = `<span class="count">${count}</span> von <span class="needed">${n}</span> Tagen gewählt – noch ${n - count} weitere.`;
+  else                  counterEl.innerHTML = `✓ <span class="count">${count}</span> Tage ausgewählt.`;
 
-  // Badge
   const badge = document.getElementById('daysCounterBadge');
   badge.innerHTML = count === n ? '<span class="days-ok-badge">✓ Vollständig</span>' : '';
 
-  // Longrun-Auswahl aktualisieren
   updateLongrunUI(checkedCbs.map(cb => cb.value));
 }
 
 function updateLongrunUI(selectedDays) {
   const group = document.getElementById('longrunGroup');
   const grid  = document.getElementById('longrunGrid');
-
-  if (selectedDays.length === 0) {
-    group.style.display = 'none';
-    return;
-  }
+  if (selectedDays.length === 0) { group.style.display = 'none'; return; }
   group.style.display = 'block';
-
-  // Aktuell gewählter Longrun-Wert
   const currentLR = document.querySelector('input[name="longrun"]:checked')?.value;
-
   grid.innerHTML = selectedDays.map(tag => `
     <div class="longrun-btn">
-      <input type="radio" name="longrun" id="lr-${tag}" value="${tag}"
-        ${tag === currentLR ? 'checked' : ''}>
+      <input type="radio" name="longrun" id="lr-${tag}" value="${tag}" ${tag === currentLR ? 'checked' : ''}>
       <label for="lr-${tag}">${TAGE_LANG[TAGE_NAMEN.indexOf(tag)]}</label>
-    </div>
-  `).join('');
-
-  // Wenn bisheriger LR-Tag nicht mehr ausgewählt, zurücksetzen
+    </div>`).join('');
   if (currentLR && !selectedDays.includes(currentLR)) {
     const firstBtn = grid.querySelector('input[name="longrun"]');
     if (firstBtn) firstBtn.checked = true;
   }
 }
 
-// Event-Listener für Tage-Checkboxen
 document.getElementById('daysGrid').addEventListener('change', () => updateDaysUI());
 
 // ─── VALIDIERUNG ─────────────────────────────────────────────────
 function validate1() {
   let ok = true;
-  const groesse   = parseInt(document.getElementById('groesse').value);
-  const gewicht   = parseInt(document.getElementById('gewicht').value);
-  const geschlecht= document.querySelector('input[name="geschlecht"]:checked');
-
+  const groesse    = parseInt(document.getElementById('groesse').value);
+  const gewicht    = parseInt(document.getElementById('gewicht').value);
+  const geschlecht = document.querySelector('input[name="geschlecht"]:checked');
   const showErr = (id, show) => {
     document.getElementById('err-' + id).style.display = show ? 'block' : 'none';
     const el = document.getElementById(id);
     if (el) el.classList.toggle('field-error', show);
   };
-
   if (!groesse  || groesse  < 140 || groesse  > 220) { showErr('groesse',   true);  ok = false; } else showErr('groesse',   false);
   if (!gewicht  || gewicht  < 40  || gewicht  > 200) { showErr('gewicht',   true);  ok = false; } else showErr('gewicht',   false);
   if (!geschlecht)                                    { showErr('geschlecht',true);  ok = false; } else showErr('geschlecht',false);
@@ -766,7 +884,20 @@ function validate1() {
 function validate2() {
   const dist = document.querySelector('input[name="distanz"]:checked');
   document.getElementById('err-distanz').style.display = dist ? 'none' : 'block';
-  return !!dist;
+  if (!dist) return false;
+
+  // Datum-Modus validieren
+  if (planMode === 'datum') {
+    const val   = document.getElementById('wettkampfDatum').value;
+    const errEl = document.getElementById('err-datum');
+    if (!val) { errEl.style.display = 'block'; return false; }
+    const today = new Date(); today.setHours(0,0,0,0);
+    const race  = new Date(val);
+    const weeks = Math.floor((race - today) / (1000 * 60 * 60 * 24 * 7));
+    if (weeks < 8) { errEl.style.display = 'block'; return false; }
+    errEl.style.display = 'none';
+  }
+  return true;
 }
 
 function validate3() {
@@ -774,37 +905,18 @@ function validate3() {
   const n       = parseInt(document.getElementById('einheitenSlider').value);
   const checked = [...document.querySelectorAll('.day-cb input:checked')];
   const lrSel   = document.querySelector('input[name="longrun"]:checked');
-  const errTage = document.getElementById('err-tage');
-  const errLR   = document.getElementById('err-longrun');
-
-  if (checked.length !== n) {
-    errTage.style.display = 'block';
-    ok = false;
-  } else {
-    errTage.style.display = 'none';
-  }
-
-  if (!lrSel) {
-    errLR.style.display = 'block';
-    ok = false;
-  } else {
-    errLR.style.display = 'none';
-  }
+  if (checked.length !== n) { document.getElementById('err-tage').style.display = 'block'; ok = false; }
+  else                       { document.getElementById('err-tage').style.display = 'none'; }
+  if (!lrSel) { document.getElementById('err-longrun').style.display = 'block'; ok = false; }
+  else        { document.getElementById('err-longrun').style.display = 'none'; }
   return ok;
 }
 
 function nextStep(n) {
   const banner = document.getElementById('errorBanner');
   banner.style.display = 'none';
-
-  if (n === 2 && !validate1()) {
-    banner.textContent = 'Bitte fülle alle Pflichtfelder korrekt aus.';
-    banner.style.display = 'block'; return;
-  }
-  if (n === 3 && !validate2()) {
-    banner.textContent = 'Bitte wähle deine Zieldistanz.';
-    banner.style.display = 'block'; return;
-  }
+  if (n === 2 && !validate1()) { banner.textContent = 'Bitte fülle alle Pflichtfelder korrekt aus.'; banner.style.display = 'block'; return; }
+  if (n === 3 && !validate2()) { banner.textContent = planMode === 'datum' ? 'Bitte wähle ein Wettkampfdatum mindestens 8 Wochen in der Zukunft.' : 'Bitte wähle deine Zieldistanz.'; banner.style.display = 'block'; return; }
   showStep(n);
 }
 
@@ -815,9 +927,9 @@ function generatePlan() {
     banner.textContent = 'Bitte wähle genau die richtige Anzahl Trainingstage und deinen Longrun-Tag.';
     banner.style.display = 'block'; return;
   }
-
   const trainingstage = [...document.querySelectorAll('.day-cb input:checked')].map(c => c.value);
   const longRunTag    = document.querySelector('input[name="longrun"]:checked')?.value;
+  const wochen        = getWochenFromInput();
 
   userData = {
     groesse     : parseInt(document.getElementById('groesse').value),
@@ -828,52 +940,36 @@ function generatePlan() {
     fitness     : document.querySelector('input[name="fitness"]:checked')?.value || 'Anfänger',
     distanz     : document.querySelector('input[name="distanz"]:checked')?.value,
     zielzeit    : parseInt(document.getElementById('zeitSlider').value),
-    wochen      : parseInt(document.getElementById('wochenSlider').value),
+    wochen,
     einheiten   : parseInt(document.getElementById('einheitenSlider').value),
     trainingstage,
-    longRunTag
+    longRunTag,
+    wettkampfDatum: planMode === 'datum' ? document.getElementById('wettkampfDatum').value : null
   };
 
+  progress     = {};
   selectedPlan = matchPlan(userData.distanz, userData.zielzeit, userData.wochen, userData.fitness, userData.einheiten);
   renderResult();
   showPage('result');
 }
 
 // ─── PLAN-MATCHING ───────────────────────────────────────────────
-/**
- * Scoring-Gewichte:
- *   Zielzeit      40 % – wie nah liegt die Zielzeit im Plan-Bereich?
- *   Fitnesslevel  30 % – exakt=1, ±1 Stufe=0.5, ±2 Stufen=0
- *   Einheiten     20 % – wie nah ist die Einheitenzahl?
- *   Wochen        10 % – wie nah ist die Planlänge?
- *
- * Neue Pläne in training_plans.json müssen dieselben Felder haben:
- *   distanz, fitnesslevel, zielzeit_min, zielzeit_max,
- *   wochen, einheiten_pro_woche
- */
 function matchPlan(dist, zielzeit, wochen, fitness, einheiten) {
   const pool = PLAENE.filter(p => p.distanz === dist);
   if (!pool.length) return PLAENE[0];
-
   const fitnessMap = { 'Anfänger':0,'Fortgeschritten':1,'Profi':2 };
   const userFit    = fitnessMap[fitness] ?? 0;
-
   const scored = pool.map(p => {
     const midzeit   = (p.zielzeit_min + p.zielzeit_max) / 2;
     const zeitRange = (p.zielzeit_max - p.zielzeit_min) || 1;
     const zeitScore = Math.max(0, 1 - Math.abs(zielzeit - midzeit) / zeitRange);
-
     const planFit   = fitnessMap[p.fitnesslevel] ?? 0;
     const fitDiff   = Math.abs(userFit - planFit);
     const fitScore  = fitDiff === 0 ? 1 : fitDiff === 1 ? 0.5 : 0;
-
     const einScore  = Math.max(0, 1 - Math.abs(einheiten - p.einheiten_pro_woche) / 4);
     const wocScore  = Math.max(0, 1 - Math.abs(wochen    - p.wochen)              / 12);
-
-    const score = zeitScore * 0.4 + fitScore * 0.3 + einScore * 0.2 + wocScore * 0.1;
-    return { plan: p, score };
+    return { plan: p, score: zeitScore * 0.4 + fitScore * 0.3 + einScore * 0.2 + wocScore * 0.1 };
   });
-
   scored.sort((a, b) => b.score - a.score);
   return scored[0].plan;
 }
@@ -883,8 +979,26 @@ function renderResult() {
   const p = selectedPlan;
   const u = userData;
 
-  document.getElementById('resultTitle').textContent    = p.id;
-  document.getElementById('resultSubtitle').textContent = `${DIST_LABELS[u.distanz]} · Ziel: ${formatZeit(u.zielzeit)} · ${p.wochen} Wochen`;
+  // Pace berechnen
+  const raceKm     = DIST_KM[u.distanz] || 5;
+  const pace       = calcPace(u.distanz, u.zielzeit);
+  const easyPace   = calcEasyPace(u.distanz, u.zielzeit);
+  const intervPace = calcIntervallPace(u.distanz, u.zielzeit);
+
+  document.getElementById('resultTitle').textContent    = `${DIST_LABELS[u.distanz]} – ${p.fitnesslevel}`;
+  document.getElementById('resultSubtitle').textContent = `Ziel: ${formatZeit(u.zielzeit)} · ${p.wochen} Wochen · ${pace} min/km`;
+
+  // Pace-Banner
+  document.getElementById('paceBanner').innerHTML = `
+    <div class="pace-item"><div class="pace-val">${pace}</div><div class="pace-lbl">Wettkampftempo (min/km)</div></div>
+    <div class="pace-divider"></div>
+    <div class="pace-item"><div class="pace-val">${easyPace}</div><div class="pace-lbl">Dauerlauf-Tempo</div></div>
+    <div class="pace-divider"></div>
+    <div class="pace-item"><div class="pace-val">${intervPace}</div><div class="pace-lbl">Intervall-Tempo</div></div>
+    <div class="pace-divider"></div>
+    <div class="pace-item"><div class="pace-val">${formatZeit(u.zielzeit)}</div><div class="pace-lbl">Zielzeit</div></div>
+    ${u.wettkampfDatum ? `<div class="pace-divider"></div><div class="pace-item"><div class="pace-val" style="font-size:1.1rem;">${new Date(u.wettkampfDatum).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})}</div><div class="pace-lbl">Wettkampftag</div></div>` : ''}
+  `;
 
   const summaryItems = [
     { label:'Größe',    val: u.groesse  + ' cm' },
@@ -911,6 +1025,7 @@ function renderResult() {
 
   p.wochen_plan.forEach((woche, wi) => {
     const tageRendered = buildWeekDays(woche);
+    const trainCount   = tageRendered.filter(t => t.typ !== 'Ruhetag').length;
     const div = document.createElement('div');
     div.className = 'week-item' + (wi === 0 ? ' open' : '');
     div.innerHTML = `
@@ -918,70 +1033,85 @@ function renderResult() {
         <div><span class="week-num">WOCHE ${wi + 1}</span><span class="week-focus">${woche.fokus}</span></div>
         <span class="week-chevron">▼</span>
       </div>
+      <div class="week-progress"><div class="week-progress-bar" id="wpb-${wi}" style="width:0%"></div></div>
+      <div class="progress-summary" id="wps-${wi}">0 von ${trainCount} Einheiten erledigt</div>
       <div class="week-body">
-        ${tageRendered.map((tag, ti) => renderTag(tag, ti)).join('')}
+        ${tageRendered.map((tag, ti) => renderTag(tag, ti, wi)).join('')}
       </div>`;
     acc.appendChild(div);
+    updateWeekProgress(wi, tageRendered);
   });
 }
 
-/**
- * Baut aus den abstrakten Einheiten-Rollen eine vollständige 7-Tage-Liste.
- * Die Reihenfolge der ausgewählten Trainingstage (Mo-So, sortiert) entspricht
- * den Rollen Tag_1, Tag_2, …, Longrun.
- * Der Longrun wird dabei auf den explizit gewählten Longrun-Tag gelegt.
- */
+// ─── TAG RENDERN MIT ABHAK-FUNKTION ──────────────────────────────
+function renderTag(tag, ti, wi) {
+  const badge    = BADGE_KLASSEN[tag.typ] || 'badge-rest';
+  const isRest   = tag.typ === 'Ruhetag';
+  const key      = `w${wi}_t${ti}`;
+  const isDone   = !!progress[key];
+  const doneClass= isDone ? ' done' : '';
+  const restClass= isRest ? ' rest-row' : '';
+
+  const details = isRest
+    ? `<small>${tag.beschreibung}</small>`
+    : `<strong>${tag.dauer_min} Min · ${tag.distanz_km} km</strong><small>${tag.beschreibung}</small>`;
+
+  const checkBtn = isRest ? '' : `<div class="day-check" onclick="toggleDone('${key}', ${wi})" title="Als erledigt markieren">✓</div>`;
+
+  return `<div class="day-row${doneClass}${restClass}" id="row-${key}">
+    <div class="day-name">${TAGE_NAMEN[ti]}</div>
+    <span class="day-badge ${badge}">${tag.typ}</span>
+    <div class="day-details">${details}</div>
+    ${checkBtn}
+  </div>`;
+}
+
+function toggleDone(key, wi) {
+  progress[key] = !progress[key];
+  const row = document.getElementById('row-' + key);
+  if (row) row.classList.toggle('done', progress[key]);
+
+  // Wochen-Fortschrittsbalken aktualisieren
+  const woche = selectedPlan.wochen_plan[wi];
+  const tage  = buildWeekDays(woche);
+  updateWeekProgress(wi, tage);
+}
+
+function updateWeekProgress(wi, tage) {
+  const trainTage  = tage.map((t, ti) => ({ t, ti })).filter(({ t }) => t.typ !== 'Ruhetag');
+  const doneCount  = trainTage.filter(({ ti }) => !!progress[`w${wi}_t${ti}`]).length;
+  const total      = trainTage.length;
+  const pct        = total > 0 ? Math.round(doneCount / total * 100) : 0;
+
+  const bar = document.getElementById(`wpb-${wi}`);
+  const txt = document.getElementById(`wps-${wi}`);
+  if (bar) bar.style.width = pct + '%';
+  if (txt) txt.innerHTML = doneCount === total && total > 0
+    ? `<span class="done-count">✓ Woche abgeschlossen!</span>`
+    : `<span class="done-count">${doneCount}</span> von ${total} Einheiten erledigt`;
+}
+
+// ─── WOCHE AUFBAUEN ──────────────────────────────────────────────
 function buildWeekDays(woche) {
-  const u           = userData;
-  // 7-Tage-Array mit Ruhetagen initialisieren
-  const result      = TAGE_NAMEN.map(() => ({
-    typ:'Ruhetag', dauer_min:0, distanz_km:0, beschreibung:'Ruhetag – Erholung und Regeneration'
-  }));
-
-  const einheiten   = woche.einheiten || [];
-  // Trainingstage nach Wochenreihenfolge (TAGE_NAMEN) sortieren
-  const sortedTage  = [...u.trainingstage].sort((a, b) =>
-    TAGE_NAMEN.indexOf(a) - TAGE_NAMEN.indexOf(b));
-
-  // Longrun-Rolle separat herausziehen
-  const lrEinheit   = einheiten.find(e => e.rolle === 'Longrun');
-  const normEinheiten = einheiten.filter(e => e.rolle !== 'Longrun');
-
-  // Nicht-Longrun-Tage: alle sortedTage außer dem LR-Tag
-  const nonLrTage   = sortedTage.filter(t => t !== u.longRunTag);
-
-  // Normale Einheiten auf Nicht-LR-Tage mappen
-  normEinheiten.forEach((einheit, i) => {
-    const tagKuerzel = nonLrTage[i];
-    if (!tagKuerzel) return;
-    const idx = TAGE_NAMEN.indexOf(tagKuerzel);
+  const u          = userData;
+  const result     = TAGE_NAMEN.map(() => ({ typ:'Ruhetag', dauer_min:0, distanz_km:0, beschreibung:'Ruhetag – Erholung und Regeneration' }));
+  const einheiten  = woche.einheiten || [];
+  const sortedTage = [...u.trainingstage].sort((a, b) => TAGE_NAMEN.indexOf(a) - TAGE_NAMEN.indexOf(b));
+  const lrEinheit  = einheiten.find(e => e.rolle === 'Longrun');
+  const normEin    = einheiten.filter(e => e.rolle !== 'Longrun');
+  const nonLrTage  = sortedTage.filter(t => t !== u.longRunTag);
+  normEin.forEach((einheit, i) => {
+    const idx = TAGE_NAMEN.indexOf(nonLrTage[i]);
     if (idx >= 0) result[idx] = einheit;
   });
-
-  // Longrun auf den gewählten LR-Tag setzen
   if (lrEinheit && u.longRunTag) {
     const idx = TAGE_NAMEN.indexOf(u.longRunTag);
     if (idx >= 0) result[idx] = lrEinheit;
   }
-
   return result;
 }
 
-function renderTag(tag, ti) {
-  const badge   = BADGE_KLASSEN[tag.typ] || 'badge-rest';
-  const details = tag.typ === 'Ruhetag'
-    ? `<small>${tag.beschreibung}</small>`
-    : `<strong>${tag.dauer_min} Min · ${tag.distanz_km} km</strong><small>${tag.beschreibung}</small>`;
-  return `<div class="day-row">
-    <div class="day-name">${TAGE_NAMEN[ti]}</div>
-    <span class="day-badge ${badge}">${tag.typ}</span>
-    <div class="day-details">${details}</div>
-  </div>`;
-}
-
-function toggleWeek(header) {
-  header.parentElement.classList.toggle('open');
-}
+function toggleWeek(header) { header.parentElement.classList.toggle('open'); }
 
 function formatZeit(min) {
   const h = Math.floor(min / 60);
@@ -997,14 +1127,16 @@ function exportPDF() {
   const u   = userData;
   let y = 20;
 
-  // Header
-  doc.setFillColor(255, 107, 53);
-  doc.rect(0, 0, 210, 35, 'F');
+  const pace     = calcPace(u.distanz, u.zielzeit);
+  const easyPace = calcEasyPace(u.distanz, u.zielzeit);
+  const intPace  = calcIntervallPace(u.distanz, u.zielzeit);
+
+  doc.setFillColor(255,107,53); doc.rect(0,0,210,35,'F');
   doc.setTextColor(255,255,255);
   doc.setFontSize(20); doc.setFont('helvetica','bold');
   doc.text('Fynns Laufcoach – Dein Trainingsplan', 15, 22);
   doc.setFontSize(10); doc.setFont('helvetica','normal');
-  doc.text(`${DIST_LABELS[u.distanz]} · ${p.fitnesslevel} · ${p.wochen} Wochen`, 15, 30);
+  doc.text(`${DIST_LABELS[u.distanz]} · ${p.fitnesslevel} · ${p.wochen} Wochen · Tempo: ${pace} min/km`, 15, 30);
 
   y = 50;
   doc.setTextColor(30,30,30);
@@ -1013,42 +1145,33 @@ function exportPDF() {
 
   doc.setFontSize(9); doc.setFont('helvetica','normal');
   const infos = [
-    ['Größe:',     u.groesse  + ' cm',           'Gewicht:',    u.gewicht + ' kg'],
-    ['Geschlecht:',u.geschlecht,                  'Level:',      u.fitness],
-    ['Distanz:',   DIST_LABELS[u.distanz],         'Zielzeit:',  formatZeit(u.zielzeit)],
-    ['Wochen:',    p.wochen   + ' Wo.',            'Einheiten:', u.einheiten + 'x/Woche'],
-    ['Longrun:',   TAGE_LANG[TAGE_NAMEN.indexOf(u.longRunTag)] || u.longRunTag, '', ''],
-    ...(u.alter ? [['Alter:', u.alter + ' J.', '', '']] : [])
+    ['Größe:',     u.groesse+' cm',          'Gewicht:',   u.gewicht+' kg'],
+    ['Geschlecht:',u.geschlecht,              'Level:',     u.fitness],
+    ['Distanz:',   DIST_LABELS[u.distanz],    'Zielzeit:',  formatZeit(u.zielzeit)],
+    ['Wochen:',    p.wochen+' Wo.',           'Einheiten:', u.einheiten+'x/Woche'],
+    ['Wettkampftempo:', pace+' min/km',        'Dauerlauf:', easyPace+' min/km'],
+    ['Intervall-Tempo:', intPace+' min/km',   'Longrun:',   TAGE_LANG[TAGE_NAMEN.indexOf(u.longRunTag)] || u.longRunTag],
+    ...(u.wettkampfDatum ? [['Wettkampftag:', new Date(u.wettkampfDatum).toLocaleDateString('de-DE'), '', '']] : []),
+    ...(u.alter ? [['Alter:', u.alter+' J.', '', '']] : [])
   ];
   infos.forEach(row => {
     doc.setFont('helvetica','bold');  doc.text(row[0], 15, y);
-    doc.setFont('helvetica','normal');doc.text(row[1], 50, y);
-    if (row[2]) {
-      doc.setFont('helvetica','bold');  doc.text(row[2], 105, y);
-      doc.setFont('helvetica','normal');doc.text(row[3], 140, y);
-    }
+    doc.setFont('helvetica','normal');doc.text(row[1], 55, y);
+    if (row[2]) { doc.setFont('helvetica','bold'); doc.text(row[2], 105, y); doc.setFont('helvetica','normal'); doc.text(row[3], 145, y); }
     y += 6;
   });
 
-  y += 4;
-  doc.setDrawColor(255,107,53); doc.setLineWidth(0.5);
-  doc.line(15, y, 195, y); y += 8;
+  y += 4; doc.setDrawColor(255,107,53); doc.setLineWidth(0.5); doc.line(15,y,195,y); y += 8;
 
-  // Wochen
   p.wochen_plan.forEach((woche, wi) => {
     if (y > 260) { doc.addPage(); y = 20; }
-    doc.setFontSize(12); doc.setFont('helvetica','bold');
-    doc.setTextColor(255,107,53);
-    doc.text(`Woche ${wi + 1}: ${woche.fokus}`, 15, y); y += 2;
-    doc.setDrawColor(255,107,53); doc.setLineWidth(0.3);
-    doc.line(15, y + 1, 195, y + 1); y += 5;
-
-    const tage = buildWeekDays(woche);
-    tage.forEach((tag, ti) => {
+    doc.setFontSize(12); doc.setFont('helvetica','bold'); doc.setTextColor(255,107,53);
+    doc.text(`Woche ${wi+1}: ${woche.fokus}`, 15, y); y += 2;
+    doc.setDrawColor(255,107,53); doc.setLineWidth(0.3); doc.line(15,y+1,195,y+1); y += 5;
+    buildWeekDays(woche).forEach((tag, ti) => {
       if (y > 268) { doc.addPage(); y = 20; }
-      doc.setFontSize(8.5); doc.setFont('helvetica','bold');
-      doc.setTextColor(60,60,60);
-      doc.text(TAGE_LANG[ti] + ':', 15, y);
+      doc.setFontSize(8.5); doc.setFont('helvetica','bold'); doc.setTextColor(60,60,60);
+      doc.text(TAGE_LANG[ti]+':', 15, y);
       doc.setFont('helvetica','normal');
       const detail = tag.typ === 'Ruhetag'
         ? `${tag.typ} – ${tag.beschreibung}`
@@ -1062,15 +1185,16 @@ function exportPDF() {
 
   doc.setFontSize(8); doc.setTextColor(150,150,150);
   doc.text('© Fynns Laufcoach – Laufe weiter, laufe besser.', 15, 290);
-
-  const distName = u.distanz.replace('halbmarathon','hm');
-  doc.save(`fynns-laufcoach-${distName}-plan.pdf`);
+  doc.save(`fynns-laufcoach-${u.distanz.replace('halbmarathon','hm')}-plan.pdf`);
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────
 updateZeit();
 updateWochen();
 onEinheitenChange();
+// Mindestdatum für Datepicker = heute + 8 Wochen
+const minDate = new Date(); minDate.setDate(minDate.getDate() + 56);
+document.getElementById('wettkampfDatum').min = minDate.toISOString().split('T')[0];
 </script>
 </body>
 </html>
