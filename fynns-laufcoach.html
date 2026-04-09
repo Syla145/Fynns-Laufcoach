@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fynns Laufcoach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root {
+  --orange: #FF6B35;
+  --orange-dark: #e05520;
+  --orange-light: #fff3ee;
+  --dark: #0f0f0f;
+  --dark2: #1a1a1a;
+  --gray: #6b6b6b;
+  --light: #f7f5f2;
+  --white: #ffffff;
+  --border: #e8e3dc;
+  --blue: #2563eb;
+  --green: #16a34a;
+  --purple: #7c3aed;
+  --yellow: #d97706;
+  --red: #dc2626;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--dark); line-height: 1.6; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5%; height: 64px;
+}
+.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; color: var(--dark); text-decoration: none; }
+.nav-logo span { color: var(--orange); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { text-decoration: none; color: var(--gray); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--orange); }
+.nav-cta { background: var(--orange); color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+.nav-cta:hover { background: var(--orange-dark); transform: scale(1.03); }
+
+/* HERO */
+#home {
+  min-height: 100vh; padding-top: 64px;
+  background: var(--dark);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; position: relative; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0; opacity: 0.06;
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 39px, var(--orange) 39px, var(--orange) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, var(--orange) 39px, var(--orange) 40px);
+}
+.hero-badge {
+  display: inline-block; background: var(--orange); color: white;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+  padding: 0.3rem 1rem; border-radius: 100px; margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 10vw, 7.5rem);
+  color: white; line-height: 0.95; letter-spacing: 2px; margin-bottom: 1.5rem;
+}
+.hero h1 span { color: var(--orange); }
+.hero p { color: #aaa; font-size: clamp(1rem, 2.5vw, 1.2rem); max-width: 520px; margin: 0 auto 2.5rem; font-weight: 300; }
+.btn-primary {
+  background: var(--orange); color: white; border: none;
+  padding: 1rem 2.5rem; border-radius: 100px;
+  font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700;
+  cursor: pointer; letter-spacing: 0.5px;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.btn-primary:hover { background: var(--orange-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,107,53,0.35); }
+.hero-scroll { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: #555; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; animation: bounce 2s infinite; }
+.scroll-dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; }
+@keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-6px); } }
+
+/* DISTANZEN */
+#distanzen { padding: 6rem 5%; background: var(--light); }
+.section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 0.75rem; }
+.section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: 1px; color: var(--dark); margin-bottom: 3rem; }
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
+.dist-card {
+  background: white; border: 1px solid var(--border); border-radius: 16px;
+  padding: 2rem 1.5rem; text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  cursor: default;
+}
+.dist-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); border-color: var(--orange); }
+.dist-icon { font-size: 2.5rem; margin-bottom: 1rem; line-height: 1; }
+.dist-km { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--orange); letter-spacing: 1px; }
+.dist-name { font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 0.75rem; }
+.dist-desc { font-size: 0.875rem; color: var(--gray); line-height: 1.6; }
+
+/* TESTIMONIALS */
+#testimonials { padding: 6rem 5%; background: white; }
+.testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-top: 3rem; }
+.testi-card {
+  background: var(--light); border-radius: 16px; padding: 1.75rem;
+  border: 1px solid var(--border); position: relative;
+}
+.testi-quote { font-size: 3rem; line-height: 1; color: var(--orange); position: absolute; top: 1rem; right: 1.5rem; font-family: Georgia, serif; }
+.testi-stars { color: var(--orange); font-size: 1rem; margin-bottom: 0.75rem; letter-spacing: 2px; }
+.testi-text { font-size: 0.9rem; color: var(--dark); line-height: 1.7; margin-bottom: 1.25rem; font-style: italic; }
+.testi-name { font-size: 0.8rem; font-weight: 700; color: var(--dark); text-transform: uppercase; letter-spacing: 1px; }
+.testi-sub { font-size: 0.75rem; color: var(--gray); }
+
+/* FOOTER */
+footer {
+  background: var(--dark); color: #aaa; text-align: center;
+  padding: 2.5rem 5%; font-size: 0.875rem;
+}
+footer strong { color: white; }
+
+/* WIZARD PAGE */
+#wizard-page { display: none; min-height: 100vh; padding-top: 64px; background: var(--light); }
+.wizard-container { max-width: 680px; margin: 0 auto; padding: 3rem 1.5rem; }
+.wizard-header { text-align: center; margin-bottom: 2.5rem; }
+.wizard-header h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; letter-spacing: 1px; color: var(--dark); }
+.progress-bar-wrap { background: var(--border); border-radius: 100px; height: 6px; margin: 1.25rem 0 0.5rem; overflow: hidden; }
+.progress-bar { height: 100%; background: var(--orange); border-radius: 100px; transition: width 0.4s ease; }
+.step-label { font-size: 0.75rem; color: var(--gray); text-align: right; }
+.wizard-card { background: white; border-radius: 20px; border: 1px solid var(--border); padding: 2.5rem; }
+.wizard-step { display: none; animation: fadeSlide 0.3s ease; }
+.wizard-step.active { display: block; }
+@keyframes fadeSlide { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+.form-group { margin-bottom: 1.5rem; }
+label { display: block; font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--dark); margin-bottom: 0.5rem; }
+label .opt { font-weight: 400; color: var(--gray); text-transform: none; letter-spacing: 0; }
+input[type=number], select {
+  width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border);
+  border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+  background: white; color: var(--dark); transition: border-color 0.2s;
+  -moz-appearance: textfield;
+}
+input[type=number]:focus, select:focus { outline: none; border-color: var(--orange); }
+input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.radio-group { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.radio-btn { position: relative; }
+.radio-btn input { position: absolute; opacity: 0; width: 0; height: 0; }
+.radio-btn label {
+  display: block; padding: 0.6rem 1.25rem; border: 1.5px solid var(--border);
+  border-radius: 100px; font-size: 0.85rem; font-weight: 500; cursor: pointer;
+  text-transform: none; letter-spacing: 0; transition: all 0.2s;
+}
+.radio-btn input:checked + label { border-color: var(--orange); background: var(--orange-light); color: var(--orange-dark); font-weight: 700; }
+.slider-wrap { position: relative; }
+input[type=range] {
+  width: 100%; height: 6px; accent-color: var(--orange); cursor: pointer;
+  background: transparent;
+}
+.slider-value {
+  display: inline-block; background: var(--orange); color: white;
+  padding: 0.2rem 0.75rem; border-radius: 100px; font-size: 0.875rem; font-weight: 700;
+  margin-top: 0.5rem;
+}
+.dist-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.dist-btn { position: relative; }
+.dist-btn input { position: absolute; opacity: 0; width: 0; height: 0; }
+.dist-btn label {
+  display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+  padding: 1.25rem 1rem; border: 1.5px solid var(--border); border-radius: 14px;
+  cursor: pointer; text-transform: none; letter-spacing: 0; transition: all 0.2s;
+  text-align: center;
+}
+.dist-btn label strong { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--orange); }
+.dist-btn label span { font-size: 0.75rem; color: var(--gray); font-weight: 500; }
+.dist-btn input:checked + label { border-color: var(--orange); background: var(--orange-light); }
+.days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.4rem; }
+.day-cb { position: relative; }
+.day-cb input { position: absolute; opacity: 0; width: 0; height: 0; }
+.day-cb label {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; aspect-ratio: 1; border: 1.5px solid var(--border); border-radius: 10px;
+  font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  text-transform: none; letter-spacing: 0;
+}
+.day-cb input:checked + label { border-color: var(--orange); background: var(--orange); color: white; }
+.wizard-actions { display: flex; gap: 1rem; margin-top: 2rem; justify-content: flex-end; }
+.btn-back { background: white; color: var(--dark); border: 1.5px solid var(--border); padding: 0.75rem 1.75rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.btn-back:hover { border-color: var(--dark); }
+.btn-next { background: var(--orange); color: white; border: none; padding: 0.75rem 2rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.btn-next:hover { background: var(--orange-dark); }
+.error-msg { background: #fff0f0; border: 1px solid #fca5a5; color: #b91c1c; padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.875rem; margin-bottom: 1rem; display: none; }
+.field-error { border-color: #ef4444 !important; }
+.field-error-text { font-size: 0.75rem; color: #ef4444; margin-top: 0.25rem; display: none; }
+
+/* RESULT PAGE */
+#result-page { display: none; min-height: 100vh; padding-top: 64px; background: var(--light); }
+.result-container { max-width: 860px; margin: 0 auto; padding: 3rem 1.5rem; }
+.result-header { background: var(--dark); border-radius: 20px; padding: 2.5rem; color: white; margin-bottom: 2rem; position: relative; overflow: hidden; }
+.result-header::after { content: ''; position: absolute; right: -3rem; top: -3rem; width: 200px; height: 200px; border: 30px solid rgba(255,107,53,0.15); border-radius: 50%; }
+.result-header h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 1px; margin-bottom: 0.5rem; }
+.result-header p { color: #aaa; font-size: 0.9rem; }
+.user-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; margin-top: 1.5rem; }
+.summary-pill { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 0.6rem 0.75rem; }
+.summary-pill span { display: block; font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.15rem; }
+.summary-pill strong { font-size: 0.9rem; color: white; }
+.plan-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 1px; margin-bottom: 0.25rem; }
+.plan-meta { font-size: 0.8rem; color: var(--gray); margin-bottom: 1.5rem; }
+.accordion { display: flex; flex-direction: column; gap: 0.75rem; }
+.week-item { background: white; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.week-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; cursor: pointer; user-select: none; transition: background 0.15s; }
+.week-header:hover { background: var(--light); }
+.week-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--orange); letter-spacing: 1px; margin-right: 0.75rem; }
+.week-focus { font-size: 0.875rem; font-weight: 500; color: var(--dark); }
+.week-chevron { transition: transform 0.25s; color: var(--gray); font-size: 1rem; }
+.week-item.open .week-chevron { transform: rotate(180deg); }
+.week-body { display: none; padding: 0 1.25rem 1.25rem; }
+.week-item.open .week-body { display: block; }
+.day-row { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.65rem 0; border-bottom: 1px solid var(--border); }
+.day-row:last-child { border-bottom: none; }
+.day-name { width: 36px; font-size: 0.7rem; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; padding-top: 2px; flex-shrink: 0; }
+.day-badge { flex-shrink: 0; padding: 0.15rem 0.6rem; border-radius: 100px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; }
+.badge-rest { background: #f3f4f6; color: #6b7280; }
+.badge-dauerlauf { background: #dbeafe; color: #1d4ed8; }
+.badge-intervall { background: #ffedd5; color: #c2410c; }
+.badge-longrun { background: #dcfce7; color: #166534; }
+.badge-regeneration { background: #f3e8ff; color: #7e22ce; }
+.badge-fahrtspiel { background: #fef9c3; color: #854d0e; }
+.day-details { flex: 1; }
+.day-details strong { font-size: 0.85rem; display: block; margin-bottom: 0.1rem; }
+.day-details small { font-size: 0.78rem; color: var(--gray); }
+.result-actions { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+.btn-pdf { background: var(--dark); color: white; border: none; padding: 0.75rem 1.75rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.btn-pdf:hover { background: #333; }
+.btn-new { background: var(--orange); color: white; border: none; padding: 0.75rem 1.75rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.btn-new:hover { background: var(--orange-dark); }
+
+@media (max-width: 640px) {
+  nav { padding: 0 4%; }
+  .nav-links { display: none; }
+  .form-row { grid-template-columns: 1fr; }
+  .dist-btns { grid-template-columns: 1fr 1fr; }
+  .days-grid { grid-template-columns: repeat(7, 1fr); }
+  .day-cb label { font-size: 0.65rem; }
+  .wizard-card { padding: 1.5rem; }
+  .user-summary { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo" onclick="showPage('home')">FYNNS <span>LAUFCOACH</span></a>
+  <ul class="nav-links">
+    <li><a href="#distanzen">Distanzen</a></li>
+    <li><a href="#testimonials">Stimmen</a></li>
+  </ul>
+  <button class="nav-cta" onclick="showPage('wizard')">Trainingsplan</button>
+</nav>
+
+<!-- LANDING PAGE -->
+<div id="home-page">
+
+  <!-- HERO -->
+  <section id="home" style="min-height:100vh;padding-top:64px;background:var(--dark);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;overflow:hidden;">
+    <div class="hero-bg"></div>
+    <div style="position:relative;z-index:2;padding:2rem 1.5rem;max-width:800px;">
+      <div class="hero-badge">Dein persönlicher Trainingsplan</div>
+      <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,10vw,7.5rem);color:white;line-height:0.95;letter-spacing:2px;margin-bottom:1.5rem;">
+        LAUF DEINE <span style="color:var(--orange);">BESTZEIT.</span><br>JETZT.
+      </h1>
+      <p style="color:#aaa;font-size:clamp(1rem,2.5vw,1.2rem);max-width:520px;margin:0 auto 2.5rem;font-weight:300;">
+        Intelligente Trainingspläne für 5 km bis Marathon – individuell auf dich zugeschnitten, kostenlos und sofort als PDF.
+      </p>
+      <button class="btn-primary" onclick="showPage('wizard')">Jetzt Trainingsplan erstellen</button>
+    </div>
+    <div style="position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;color:#555;font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;">
+      SCROLL ↓
+    </div>
+  </section>
+
+  <!-- DISTANZEN -->
+  <section id="distanzen" style="padding:6rem 5%;background:var(--light);">
+    <div class="section-label">Wähle dein Ziel</div>
+    <h2 class="section-title">Für jede Distanz<br>der richtige Plan</h2>
+    <div class="cards-grid">
+      <div class="dist-card">
+        <div class="dist-icon">🏃</div>
+        <div class="dist-km">5 KM</div>
+        <div class="dist-name">Einstieg</div>
+        <p class="dist-desc">Perfekt für Einsteiger oder zur Steigerung der Grundschnelligkeit. Ab 8 Wochen möglich.</p>
+      </div>
+      <div class="dist-card">
+        <div class="dist-icon">⚡</div>
+        <div class="dist-km">10 KM</div>
+        <div class="dist-name">Volksläufer</div>
+        <p class="dist-desc">Die klassische Wettkampfdistanz. Ideal für alle, die ihren ersten großen Lauf planen.</p>
+      </div>
+      <div class="dist-card">
+        <div class="dist-icon">🌅</div>
+        <div class="dist-km">21 KM</div>
+        <div class="dist-name">Halbmarathon</div>
+        <p class="dist-desc">Die große Herausforderung für ambitionierte Läufer. Mit 10–16 Wochen gut vorbereitet.</p>
+      </div>
+      <div class="dist-card">
+        <div class="dist-icon">🏆</div>
+        <div class="dist-km">42 KM</div>
+        <div class="dist-name">Marathon</div>
+        <p class="dist-desc">Das Königsprojekt. Dein systematischer Aufbau über 16–20 Wochen zum Zieleinlauf.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials" style="padding:6rem 5%;background:white;">
+    <div class="section-label">Was Läufer sagen</div>
+    <h2 class="section-title">Echte Ergebnisse,<br>echte Läufer</h2>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">Dank Fynns Laufcoach habe ich meinen ersten Halbmarathon in unter 2 Stunden gefinisht. Der Plan war genau auf mein Niveau abgestimmt!</p>
+        <div class="testi-name">Sabrina K.</div>
+        <div class="testi-sub">Halbmarathon · 1:58:32</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">Ich habe als kompletter Anfänger angefangen und kann jetzt stolz 10 km am Stück laufen. Der Plan war klar strukturiert und gut umsetzbar.</p>
+        <div class="testi-name">Marcus T.</div>
+        <div class="testi-sub">10 km · Erstläufer</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★☆</div>
+        <p class="testi-text">Meine Marathon-PB geknackt! Die Kombination aus Intervalltraining und Long Runs war genau richtig. Werde den Plan definitiv wieder nutzen.</p>
+        <div class="testi-name">Jörg W.</div>
+        <div class="testi-sub">Marathon · 3:42:17</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">Super einfach zu bedienen! Der PDF-Export ist klasse – so habe ich meinen Plan immer dabei, auch ohne Internet.</p>
+        <div class="testi-name">Lena M.</div>
+        <div class="testi-sub">5 km · 23:44</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section style="padding:5rem 5%;background:var(--orange);text-align:center;">
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.5rem);color:white;letter-spacing:1px;margin-bottom:1rem;">Bereit für deinen nächsten Lauf?</h2>
+    <p style="color:rgba(255,255,255,0.85);margin-bottom:2rem;font-size:1rem;">Erstelle in unter 2 Minuten deinen kostenlosen Trainingsplan.</p>
+    <button class="btn-primary" style="background:white;color:var(--orange);" onclick="showPage('wizard')">Trainingsplan erstellen →</button>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 <strong>Fynns Laufcoach</strong> · Alle Rechte vorbehalten · Laufe weiter, laufe besser.</p>
+  </footer>
+
+</div><!-- end home-page -->
+
+<!-- WIZARD PAGE -->
+<div id="wizard-page">
+  <div class="wizard-container">
+    <div class="wizard-header">
+      <div class="section-label">Trainingsplan-Assistent</div>
+      <h2>Dein persönlicher Plan</h2>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:33%"></div></div>
+      <div class="step-label" id="stepLabel">Schritt 1 von 3</div>
+    </div>
+
+    <div id="errorBanner" class="error-msg"></div>
+
+    <div class="wizard-card">
+      <!-- SCHRITT 1 -->
+      <div class="wizard-step active" id="step1">
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;margin-bottom:0.25rem;">Persönliche Daten</h3>
+        <p style="font-size:0.85rem;color:var(--gray);margin-bottom:1.75rem;">Pflichtfelder mit * müssen ausgefüllt werden.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Größe (cm) *</label>
+            <input type="number" id="groesse" min="140" max="220" placeholder="z.B. 175">
+            <div class="field-error-text" id="err-groesse">Bitte gib deine Größe ein (140–220 cm).</div>
+          </div>
+          <div class="form-group">
+            <label>Gewicht (kg) *</label>
+            <input type="number" id="gewicht" min="40" max="200" placeholder="z.B. 70">
+            <div class="field-error-text" id="err-gewicht">Bitte gib dein Gewicht ein (40–200 kg).</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Geschlecht *</label>
+          <div class="radio-group" id="geschlechtGroup">
+            <div class="radio-btn"><input type="radio" name="geschlecht" id="g-m" value="Männlich"><label for="g-m">Männlich</label></div>
+            <div class="radio-btn"><input type="radio" name="geschlecht" id="g-w" value="Weiblich"><label for="g-w">Weiblich</label></div>
+            <div class="radio-btn"><input type="radio" name="geschlecht" id="g-d" value="Divers"><label for="g-d">Divers</label></div>
+          </div>
+          <div class="field-error-text" id="err-geschlecht">Bitte wähle dein Geschlecht aus.</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Alter <span class="opt">(optional)</span></label>
+            <input type="number" id="alter" min="10" max="100" placeholder="z.B. 32">
+          </div>
+          <div class="form-group">
+            <label>Ruhepuls (bpm) <span class="opt">(optional)</span></label>
+            <input type="number" id="ruhepuls" min="30" max="100" placeholder="z.B. 60">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Fitnesslevel</label>
+          <div class="radio-group">
+            <div class="radio-btn"><input type="radio" name="fitness" id="f-a" value="Anfänger" checked><label for="f-a">Anfänger</label></div>
+            <div class="radio-btn"><input type="radio" name="fitness" id="f-f" value="Fortgeschritten"><label for="f-f">Fortgeschritten</label></div>
+            <div class="radio-btn"><input type="radio" name="fitness" id="f-p" value="Profi"><label for="f-p">Profi</label></div>
+          </div>
+        </div>
+        <div class="wizard-actions">
+          <button class="btn-back" onclick="showPage('home')">← Zurück</button>
+          <button class="btn-next" onclick="nextStep(2)">Weiter →</button>
+        </div>
+      </div>
+
+      <!-- SCHRITT 2 -->
+      <div class="wizard-step" id="step2">
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;margin-bottom:0.25rem;">Trainingsziel</h3>
+        <p style="font-size:0.85rem;color:var(--gray);margin-bottom:1.75rem;">Wähle deine Wettbewerbs­distanz und Zielzeit.</p>
+        <div class="form-group">
+          <label>Zieldistanz *</label>
+          <div class="dist-btns" id="distGroup">
+            <div class="dist-btn"><input type="radio" name="distanz" id="d-5" value="5km"><label for="d-5"><strong>5 KM</strong><span>Einstieg</span></label></div>
+            <div class="dist-btn"><input type="radio" name="distanz" id="d-10" value="10km"><label for="d-10"><strong>10 KM</strong><span>Volksläufer</span></label></div>
+            <div class="dist-btn"><input type="radio" name="distanz" id="d-hm" value="halbmarathon"><label for="d-hm"><strong>21 KM</strong><span>Halbmarathon</span></label></div>
+            <div class="dist-btn"><input type="radio" name="distanz" id="d-ma" value="marathon"><label for="d-ma"><strong>42 KM</strong><span>Marathon</span></label></div>
+          </div>
+          <div class="field-error-text" id="err-distanz">Bitte wähle eine Zieldistanz.</div>
+        </div>
+        <div class="form-group">
+          <label>Zielzeit: <span id="zeitDisplay" style="color:var(--orange);font-weight:700;">30:00</span></label>
+          <div class="slider-wrap">
+            <input type="range" id="zeitSlider" min="15" max="45" value="30" step="1" oninput="updateZeit()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Planlänge: <span id="wochenDisplay" style="color:var(--orange);font-weight:700;">12 Wochen</span></label>
+          <div class="slider-wrap">
+            <input type="range" id="wochenSlider" min="8" max="20" value="12" step="2" oninput="updateWochen()">
+          </div>
+        </div>
+        <div class="wizard-actions">
+          <button class="btn-back" onclick="nextStep(1)">← Zurück</button>
+          <button class="btn-next" onclick="nextStep(3)">Weiter →</button>
+        </div>
+      </div>
+
+      <!-- SCHRITT 3 -->
+      <div class="wizard-step" id="step3">
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;margin-bottom:0.25rem;">Trainingsplanung</h3>
+        <p style="font-size:0.85rem;color:var(--gray);margin-bottom:1.75rem;">Wie oft und wann möchtest du trainieren?</p>
+        <div class="form-group">
+          <label>Einheiten pro Woche: <span id="einheitenDisplay" style="color:var(--orange);font-weight:700;">3</span></label>
+          <input type="range" id="einheitenSlider" min="2" max="6" value="3" step="1" oninput="document.getElementById('einheitenDisplay').textContent=this.value">
+        </div>
+        <div class="form-group">
+          <label>Trainingstage <span class="opt">(optional – Mehrfachauswahl)</span></label>
+          <div class="days-grid">
+            <div class="day-cb"><input type="checkbox" id="d-mo" value="Mo"><label for="d-mo">Mo</label></div>
+            <div class="day-cb"><input type="checkbox" id="d-di" value="Di"><label for="d-di">Di</label></div>
+            <div class="day-cb"><input type="checkbox" id="d-mi" value="Mi"><label for="d-mi">Mi</label></div>
+            <div class="day-cb"><input type="checkbox" id="d-do" value="Do"><label for="d-do">Do</label></div>
+            <div class="day-cb"><input type="checkbox" id="d-fr" value="Fr"><label for="d-fr">Fr</label></div>
+            <div class="day-cb"><input type="checkbox" id="d-sa" value="Sa"><label for="d-sa">Sa</label></div>
+            <div class="day-cb"><input type="checkbox" id="d-so" value="So"><label for="d-so">So</label></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Long-Run-Tag <span class="opt">(optional)</span></label>
+          <select id="longRunTag">
+            <option value="">– Nicht festlegen –</option>
+            <option value="Mo">Montag</option>
+            <option value="Di">Dienstag</option>
+            <option value="Mi">Mittwoch</option>
+            <option value="Do">Donnerstag</option>
+            <option value="Fr">Freitag</option>
+            <option value="Sa" selected>Samstag</option>
+            <option value="So">Sonntag</option>
+          </select>
+        </div>
+        <div class="wizard-actions">
+          <button class="btn-back" onclick="nextStep(2)">← Zurück</button>
+          <button class="btn-next" style="background:var(--dark);" onclick="generatePlan()">Plan erstellen ✓</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT PAGE -->
+<div id="result-page">
+  <div class="result-container">
+    <div class="result-header">
+      <div style="font-size:0.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:0.5rem;">Dein Trainingsplan</div>
+      <h2 id="resultTitle">Plan bereit</h2>
+      <p id="resultSubtitle">Basierend auf deinen Angaben</p>
+      <div class="user-summary" id="userSummary"></div>
+    </div>
+    <div class="plan-title" id="planName"></div>
+    <div class="plan-meta" id="planMeta"></div>
+    <div class="accordion" id="accordionWrap"></div>
+    <div class="result-actions">
+      <button class="btn-new" onclick="showPage('wizard')">← Neuen Plan erstellen</button>
+      <button class="btn-pdf" onclick="exportPDF()">PDF exportieren ↓</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── TRAININGSPLÄNE ───────────────────────────────────────────────
+const PLAENE = [
+  {
+    id: "5km-anf-a",
+    distanz: "5km",
+    name: "5 km Einsteiger – Lauf-Geh-Methode",
+    fitnesslevel: "Anfänger",
+    wochen: 8,
+    einheiten_pro_woche: 3,
+    zielzeit_min: 30,
+    zielzeit_max: 45,
+    wochen_plan: [
+      { fokus: "Lauf-Geh-Einstieg", tage: [
+        { typ: "Dauerlauf", dauer: 20, distanz: 2.5, beschreibung: "5 Min laufen / 2 Min gehen, 3× wiederholen" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholen und dehnen" },
+        { typ: "Regeneration", dauer: 25, distanz: 2, beschreibung: "Lockerer Spaziergang oder leichtes Dehnen" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Aktive Erholung – Yoga oder Schwimmen" },
+        { typ: "Dauerlauf", dauer: 22, distanz: 2.8, beschreibung: "6 Min laufen / 2 Min gehen, 2× wiederholen" },
+        { typ: "Long Run", dauer: 30, distanz: 3.5, beschreibung: "Langsamer Dauerlauf ohne Pause versuchen" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Komplette Erholung" }
+      ]},
+      { fokus: "Ausdaueraufbau", tage: [
+        { typ: "Dauerlauf", dauer: 22, distanz: 2.8, beschreibung: "8 Min laufen / 2 Min gehen, 2× wiederholen" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Intervall", dauer: 20, distanz: 2.5, beschreibung: "4× 2 Min schnell / 2 Min Trab" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Stretching und Foam-Rolling" },
+        { typ: "Dauerlauf", dauer: 25, distanz: 3, beschreibung: "Gleichmäßiges Tempo, ruhig bleiben" },
+        { typ: "Long Run", dauer: 35, distanz: 4, beschreibung: "Längste Einheit der Woche – sehr langsam" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Komplette Erholung" }
+      ]},
+      { fokus: "Kontinuität", tage: [
+        { typ: "Dauerlauf", dauer: 25, distanz: 3, beschreibung: "Ruhiges Tempo, 10 Min laufen / 1 Min gehen" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Fahrtspiel", dauer: 25, distanz: 3, beschreibung: "Freie Tempowechsel je nach Gefühl" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 28, distanz: 3.5, beschreibung: "Konstantes Tempo halten" },
+        { typ: "Long Run", dauer: 38, distanz: 4.5, beschreibung: "Slow and steady – die Beine gewöhnen sich" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Regeneration" }
+      ]},
+      { fokus: "Regenerationswoche", tage: [
+        { typ: "Regeneration", dauer: 20, distanz: 2, beschreibung: "Sehr ruhiger Lauf zum Erholen" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 22, distanz: 2.8, beschreibung: "Leichter Dauerlauf, kein Druck" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Aktive Erholung" },
+        { typ: "Long Run", dauer: 30, distanz: 3.5, beschreibung: "Entspannter langer Lauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Regeneration" }
+      ]},
+      { fokus: "Tempoentwicklung", tage: [
+        { typ: "Intervall", dauer: 28, distanz: 3.5, beschreibung: "5× 3 Min zügig / 90 Sek Trab" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 28, distanz: 3.5, beschreibung: "Komfortables Tempo" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Fahrtspiel", dauer: 28, distanz: 3.5, beschreibung: "Tempospiele auf 3 km" },
+        { typ: "Long Run", dauer: 42, distanz: 5, beschreibung: "Erste komplette 5-km-Runde!" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Regeneration" }
+      ]},
+      { fokus: "Stabilisierung", tage: [
+        { typ: "Dauerlauf", dauer: 30, distanz: 3.8, beschreibung: "Stabiles Tempo über 30 Minuten" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Intervall", dauer: 30, distanz: 4, beschreibung: "6× 2 Min schnell / 1 Min Gehen" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 20, distanz: 2.5, beschreibung: "Lockerer Lauf zur aktiven Erholung" },
+        { typ: "Long Run", dauer: 44, distanz: 5.5, beschreibung: "Über Wettkampfdistanz – Selbstvertrauen stärken" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Regeneration" }
+      ]},
+      { fokus: "Tapering", tage: [
+        { typ: "Dauerlauf", dauer: 25, distanz: 3, beschreibung: "Lockerer Erhaltungslauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Intervall", dauer: 20, distanz: 2.5, beschreibung: "Kurze schnelle Einheit" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 15, distanz: 2, beschreibung: "Sehr lockerer Lauf" },
+        { typ: "Dauerlauf", dauer: 20, distanz: 3, beschreibung: "Leichter Lauf, Wettkampfstimmung aufbauen" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Regeneration" }
+      ]},
+      { fokus: "Wettkampfwoche", tage: [
+        { typ: "Regeneration", dauer: 15, distanz: 2, beschreibung: "Ganz lockerer Einlauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung und Materialkontrolle" },
+        { typ: "Intervall", dauer: 15, distanz: 2, beschreibung: "Kurze Strides zum Aktivieren" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Komplette Ruhe" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Letzte Vorbereitung – schlafen!" },
+        { typ: "Dauerlauf", dauer: 10, distanz: 1.5, beschreibung: "Kurzes Einlaufen am Morgen" },
+        { typ: "Long Run", dauer: 35, distanz: 5, beschreibung: "🏁 WETTKAMPFTAG – Alles geben!" }
+      ]}
+    ]
+  },
+  {
+    id: "5km-fort-b",
+    distanz: "5km",
+    name: "5 km Fortgeschritten – Tempohärter",
+    fitnesslevel: "Fortgeschritten",
+    wochen: 10,
+    einheiten_pro_woche: 4,
+    zielzeit_min: 20,
+    zielzeit_max: 32,
+    wochen_plan: [
+      { fokus: "Tempobasis aufbauen", tage: [
+        { typ: "Dauerlauf", dauer: 35, distanz: 5, beschreibung: "Ruhiges Grundlagentraining" },
+        { typ: "Intervall", dauer: 30, distanz: 5, beschreibung: "6× 400 m in 5-km-Renntempo" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 25, distanz: 4, beschreibung: "Sehr lockerer Erholungslauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Fahrtspiel", dauer: 35, distanz: 5.5, beschreibung: "Tempowechsel auf natürlichen Geländeformen" },
+        { typ: "Long Run", dauer: 50, distanz: 8, beschreibung: "Langer Lauf im lockeren Tempo" }
+      ]},
+      { fokus: "VO2max Entwicklung", tage: [
+        { typ: "Dauerlauf", dauer: 35, distanz: 5.5, beschreibung: "Komfortables Dauertempo" },
+        { typ: "Intervall", dauer: 35, distanz: 5, beschreibung: "8× 400 m @ 5k-Pace mit 60 Sek Pause" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 25, distanz: 3.5, beschreibung: "Lockerer Trab" },
+        { typ: "Ruhetag", deru: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 35, distanz: 5.5, beschreibung: "GA1-Tempo, gleichmäßig" },
+        { typ: "Long Run", dauer: 55, distanz: 9, beschreibung: "Langer Lauf, letzte 2 km flotter" }
+      ]},
+      { fokus: "Schwellentraining", tage: [
+        { typ: "Dauerlauf", dauer: 38, distanz: 6, beschreibung: "Ruhige Grundlage" },
+        { typ: "Intervall", dauer: 38, distanz: 6, beschreibung: "3× 1.600 m @ Schwellentempo" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 25, distanz: 4, beschreibung: "Locker traben" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Fahrtspiel", dauer: 38, distanz: 6, beschreibung: "Freie Strides und Tempowechsel" },
+        { typ: "Long Run", dauer: 60, distanz: 10, beschreibung: "10 km im gleichmäßigen Tempo" }
+      ]},
+      { fokus: "Regenerationswoche", tage: [
+        { typ: "Dauerlauf", dauer: 30, distanz: 4.5, beschreibung: "Sehr locker" },
+        { typ: "Regeneration", dauer: 20, distanz: 3, beschreibung: "Erholungslauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 20, distanz: 3, beschreibung: "Lockerer Lauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 30, distanz: 4.5, beschreibung: "Leichter Lauf" },
+        { typ: "Long Run", dauer: 45, distanz: 7, beschreibung: "Erholsamer langer Lauf" }
+      ]},
+      { fokus: "Renntempo intensivieren", tage: [
+        { typ: "Dauerlauf", dauer: 35, distanz: 5.5, beschreibung: "Solides Grundlagentempo" },
+        { typ: "Intervall", dauer: 40, distanz: 6, beschreibung: "10× 400 m @ 5k-Pace, 45 Sek Pause" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 25, distanz: 4, beschreibung: "Erholungseinheit" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Fahrtspiel", dauer: 40, distanz: 6, beschreibung: "Tempospiele im Park" },
+        { typ: "Long Run", dauer: 60, distanz: 10, beschreibung: "Fartlek-Elemente einbauen" }
+      ]},
+      { fokus: "Tempofestigkeit", tage: [
+        { typ: "Dauerlauf", dauer: 35, distanz: 5.5, beschreibung: "Gleichmäßig und kraftvoll" },
+        { typ: "Intervall", dauer: 42, distanz: 6.5, beschreibung: "2× 2.000 m @ 5k-Pace" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 25, distanz: 4, beschreibung: "Lockerer Lauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 35, distanz: 5.5, beschreibung: "Stetig hohes Niveau" },
+        { typ: "Long Run", dauer: 65, distanz: 11, beschreibung: "Über Distanz – mental stark bleiben" }
+      ]},
+      { fokus: "Peakwoche", tage: [
+        { typ: "Dauerlauf", dauer: 38, distanz: 6, beschreibung: "Starke Grundlage" },
+        { typ: "Intervall", dauer: 45, distanz: 7, beschreibung: "12× 400 m @ 5k-Pace" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 25, distanz: 4, beschreibung: "Sehr locker" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Fahrtspiel", dauer: 40, distanz: 6.5, beschreibung: "Alles nochmal ausprobieren" },
+        { typ: "Long Run", dauer: 65, distanz: 11, beschreibung: "Letzte lange Einheit vor dem Tapern" }
+      ]},
+      { fokus: "Tapering Woche 1", tage: [
+        { typ: "Dauerlauf", dauer: 30, distanz: 5, beschreibung: "Reduziertes Volumen" },
+        { typ: "Intervall", dauer: 28, distanz: 4.5, beschreibung: "6× 400 m @ Renntempo" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 20, distanz: 3, beschreibung: "Locker" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 25, distanz: 4, beschreibung: "Lockerer Lauf" },
+        { typ: "Long Run", dauer: 45, distanz: 7, beschreibung: "Kürzerer langer Lauf" }
+      ]},
+      { fokus: "Tapering Woche 2", tage: [
+        { typ: "Dauerlauf", dauer: 22, distanz: 3.5, beschreibung: "Ganz locker" },
+        { typ: "Intervall", dauer: 20, distanz: 3, beschreibung: "4× 400 m @ Renntempo" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 15, distanz: 2.5, beschreibung: "Sehr locker" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 20, distanz: 3.5, beschreibung: "Leichter Lauf" },
+        { typ: "Long Run", dauer: 30, distanz: 5, beschreibung: "Testlauf im Wettkampftempo" }
+      ]},
+      { fokus: "Wettkampfwoche", tage: [
+        { typ: "Regeneration", dauer: 15, distanz: 2, beschreibung: "Einlaufen, locker" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Intervall", dauer: 15, distanz: 2.5, beschreibung: "Kurze Strides" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Komplette Ruhe" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Schlafen, Essen, Trinken" },
+        { typ: "Regeneration", dauer: 10, distanz: 1.5, beschreibung: "Kurzes Einlaufen" },
+        { typ: "Long Run", dauer: 25, distanz: 5, beschreibung: "🏁 WETTKAMPFTAG – PB angreifen!" }
+      ]}
+    ]
+  },
+  {
+    id: "10km-anf-a",
+    distanz: "10km",
+    name: "10 km Einsteiger – Erster Volkslauf",
+    fitnesslevel: "Anfänger",
+    wochen: 10,
+    einheiten_pro_woche: 3,
+    zielzeit_min: 55,
+    zielzeit_max: 80,
+    wochen_plan: [
+      { fokus: "Grundlagenaufbau", tage: [
+        { typ: "Dauerlauf", dauer: 25, distanz: 3, beschreibung: "Geh-Lauf-Methode: 8/2 Minuten" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 20, distanz: 2.5, beschreibung: "Lockerer Spaziergang" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 25, distanz: 3, beschreibung: "Gleichmäßiges Tempo" },
+        { typ: "Long Run", dauer: 35, distanz: 4.5, beschreibung: "Erster längerer Lauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" }
+      ]},
+      { fokus: "Ausdauer steigern", tage: [
+        { typ: "Dauerlauf", dauer: 28, distanz: 3.5, beschreibung: "10 Min laufen / 1 Min gehen" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Intervall", dauer: 25, distanz: 3.5, beschreibung: "4× 3 Min zügig / 90 Sek Trab" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 28, distanz: 3.5, beschreibung: "Ruhiges Tempo" },
+        { typ: "Long Run", dauer: 40, distanz: 5, beschreibung: "5 km ohne Pause!" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" }
+      ]},
+      { fokus: "Konditionsfestigung", tage: [
+        { typ: "Dauerlauf", dauer: 30, distanz: 4, beschreibung: "Konstantes Tempo" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Fahrtspiel", dauer: 30, distanz: 4, beschreibung: "Tempowechsel je nach Lust" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 30, distanz: 4, beschreibung: "Gleichmäßig und entspannt" },
+        { typ: "Long Run", dauer: 45, distanz: 6, beschreibung: "6 km Dauerlauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" }
+      ]},
+      { fokus: "Regenerationswoche", tage: [
+        { typ: "Regeneration", dauer: 22, distanz: 2.8, beschreibung: "Sehr locker" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 25, distanz: 3.2, beschreibung: "Leicht und entspannt" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Long Run", dauer: 38, distanz: 5, beschreibung: "Erholsamer langer Lauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" }
+      ]},
+      { fokus: "Distanzaufbau", tage: [
+        { typ: "Dauerlauf", dauer: 32, distanz: 4.5, beschreibung: "Stabiles Tempo" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Intervall", dauer: 30, distanz: 4.5, beschreibung: "5× 3 Min schnell / 2 Min Trab" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 32, distanz: 4.5, beschreibung: "Gleichmäßig laufen" },
+        { typ: "Long Run", dauer: 50, distanz: 7, beschreibung: "7 km – neuer persönlicher Rekord!" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" }
+      ]},
+      { fokus: "Tempogefühl entwickeln", tage: [
+        { typ: "Dauerlauf", dauer: 35, distanz: 5, beschreibung: "Lockeres Dauertempo" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Fahrtspiel", dauer: 32, distanz: 4.5, beschreibung: "Temposteigerungen auf 400 m" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 32, distanz: 4.5, beschreibung: "Gleichmäßig" },
+        { typ: "Long Run", dauer: 55, distanz: 8, beschreibung: "8 km im lockeren Tempo" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" }
+      ]},
+      { fokus: "Peakwoche", tage: [
+        { typ: "Dauerlauf", dauer: 35, distanz: 5, beschreibung: "Stabile Basis" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Intervall", dauer: 35, distanz: 5, beschreibung: "6× 3 Min schnell" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 30, distanz: 4, beschreibung: "Ruhig und kontrolliert" },
+        { typ: "Long Run", dauer: 65, distanz: 9, beschreibung: "9 km – fast am Ziel!" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" }
+      ]},
+      { fokus: "Tapering", tage: [
+        { typ: "Dauerlauf", dauer: 28, distanz: 4, beschreibung: "Leichter Lauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Intervall", dauer: 22, distanz: 3, beschreibung: "Kurze Strides" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 20, distanz: 2.5, beschreibung: "Sehr locker" },
+        { typ: "Dauerlauf", dauer: 25, distanz: 3.5, beschreibung: "Leichter Auslauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" }
+      ]},
+      { fokus: "Anpassungswoche", tage: [
+        { typ: "Regeneration", dauer: 18, distanz: 2.5, beschreibung: "Lockeres Einlaufen" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 20, distanz: 3, beschreibung: "Leichter Lauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 15, distanz: 2, beschreibung: "Kurzer Lockerungslauf" },
+        { typ: "Long Run", dauer: 38, distanz: 6, beschreibung: "Testlauf im Renntempo" }
+      ]},
+      { fokus: "Wettkampfwoche", tage: [
+        { typ: "Regeneration", dauer: 15, distanz: 2, beschreibung: "Lockeres Einlaufen" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Intervall", dauer: 12, distanz: 2, beschreibung: "Kurze Aktivierungsläufe" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Komplett ausruhen" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Gut essen und schlafen" },
+        { typ: "Regeneration", dauer: 10, distanz: 1.5, beschreibung: "Kurzes Einlaufen" },
+        { typ: "Long Run", dauer: 65, distanz: 10, beschreibung: "🏁 WETTKAMPFTAG – Erster 10-km-Lauf!" }
+      ]}
+    ]
+  },
+  {
+    id: "10km-fort-b",
+    distanz: "10km",
+    name: "10 km Fortgeschritten – Unter 50 Minuten",
+    fitnesslevel: "Fortgeschritten",
+    wochen: 12,
+    einheiten_pro_woche: 4,
+    zielzeit_min: 35,
+    zielzeit_max: 55,
+    wochen_plan: Array.from({length:12}, (_, i) => ({
+      fokus: ["Grundlagenaufbau", "Tempobasis", "Intervallintensität", "Regeneration", "Schwellenläufe", "VO2max Block", "Regeneration", "Spezifische Vorbereitung", "Peakwoche", "Tapering I", "Tapering II", "Wettkampfwoche"][i],
+      tage: [
+        { typ: "Dauerlauf", dauer: 38 - i, distanz: 6 - i*0.1, beschreibung: "Gleichmäßiges GA1-Tempo" },
+        { typ: "Intervall", dauer: 40 - i, distanz: 6, beschreibung: "6× 800 m @ 10k-Pace" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 25, distanz: 4, beschreibung: "Lockerer Trab" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Fahrtspiel", dauer: 38 - i, distanz: 6, beschreibung: "Tempowechsel im freien Rhythmus" },
+        { typ: "Long Run", dauer: 60 + i*2, distanz: 10 + i*0.3, beschreibung: "Langer Lauf GA1" }
+      ]
+    }))
+  },
+  {
+    id: "hm-anf-a",
+    distanz: "halbmarathon",
+    name: "Halbmarathon Einsteiger – Erster Halbmarathon",
+    fitnesslevel: "Anfänger",
+    wochen: 16,
+    einheiten_pro_woche: 3,
+    zielzeit_min: 130,
+    zielzeit_max: 180,
+    wochen_plan: Array.from({length:16}, (_, i) => ({
+      fokus: ["Grundlage aufbauen", "Wochenvolumen steigern", "Dauerlaufbasis", "Regeneration", "Erste längere Läufe", "Kilometerfresser-Woche", "Tempogefühl", "Regeneration", "Intensitätssteigerung", "Long-Run-Fokus", "Peakvolumen I", "Regeneration", "Peakvolumen II", "Tapering I", "Tapering II", "Wettkampfwoche"][i],
+      tage: [
+        { typ: "Dauerlauf", dauer: 30 + i*2, distanz: 4.5 + i*0.4, beschreibung: "Ruhiges GA1-Tempo" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Intervall", dauer: 30 + i, distanz: 5 + i*0.3, beschreibung: "Tempointervalle" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Regeneration", dauer: 25, distanz: 3.5, beschreibung: "Lockerer Erhaltungslauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Long Run", dauer: 55 + i*4, distanz: 8 + i*0.7, beschreibung: "Langer Lauf – sehr locker" }
+      ]
+    }))
+  },
+  {
+    id: "hm-fort-b",
+    distanz: "halbmarathon",
+    name: "Halbmarathon Fortgeschritten – Sub 1:45",
+    fitnesslevel: "Fortgeschritten",
+    wochen: 14,
+    einheiten_pro_woche: 5,
+    zielzeit_min: 95,
+    zielzeit_max: 135,
+    wochen_plan: Array.from({length:14}, (_, i) => ({
+      fokus: ["Ausdauergrundlage", "Wochenvolumen erhöhen", "Schwellentraining", "Regeneration", "Tempoblöcke", "VO2max Einheiten", "Regeneration", "Wettkampfspezifisch", "Peakwoche", "Volumenreduktion I", "Regeneration", "Tapering II", "Letzte Vorbereitung", "Wettkampfwoche"][i],
+      tage: [
+        { typ: "Dauerlauf", dauer: 40 + i, distanz: 6 + i*0.3, beschreibung: "Komfortables GA1-Tempo" },
+        { typ: "Intervall", dauer: 45, distanz: 7, beschreibung: "8× 800 m @ HM-Tempo" },
+        { typ: "Regeneration", dauer: 25, distanz: 4, beschreibung: "Locker" },
+        { typ: "Dauerlauf", dauer: 40 + i, distanz: 6, beschreibung: "Gleichmäßig und stark" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Fahrtspiel", dauer: 40, distanz: 6.5, beschreibung: "Fartlek-Einheit" },
+        { typ: "Long Run", dauer: 70 + i*3, distanz: 12 + i*0.6, beschreibung: "Langer Lauf mit HM-Tempo-Einschüben" }
+      ]
+    }))
+  },
+  {
+    id: "ma-anf-a",
+    distanz: "marathon",
+    name: "Marathon Einsteiger – Ankommen ist alles",
+    fitnesslevel: "Anfänger",
+    wochen: 20,
+    einheiten_pro_woche: 4,
+    zielzeit_min: 270,
+    zielzeit_max: 360,
+    wochen_plan: Array.from({length:20}, (_, i) => ({
+      fokus: ["Basisaufbau", "Wochenvolumen 30 km", "Grundlagenausdauer", "Regeneration", "Erste 15-km-Läufe", "Wochenvolumen 40 km", "Tempogefühl", "Regeneration", "Längere Läufe", "Wochenvolumen 50 km", "Erster 25-km-Lauf", "Regeneration", "Marathonspezifisch", "30-km-Lauf", "Höchstbelastung", "Regeneration", "Taper Beginn", "Taper II", "Finale Vorbereitung", "Wettkampfwoche"][i],
+      tage: [
+        { typ: "Dauerlauf", dauer: 35 + i*2, distanz: 5 + i*0.5, beschreibung: "GA1-Tempo, kontrolliert" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Dauerlauf", dauer: 35 + i, distanz: 5 + i*0.4, beschreibung: "Mittlere Einheit" },
+        { typ: "Regeneration", dauer: 25, distanz: 4, beschreibung: "Lockerer Erhaltungslauf" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Intervall", dauer: 38 + i, distanz: 6, beschreibung: "Maratonstempo-Intervalle" },
+        { typ: "Long Run", dauer: 60 + i*7, distanz: 10 + i*1, beschreibung: "Langer Lauf – wichtigste Einheit der Woche" }
+      ]
+    }))
+  },
+  {
+    id: "ma-fort-b",
+    distanz: "marathon",
+    name: "Marathon Fortgeschritten – Sub 4:00",
+    fitnesslevel: "Fortgeschritten",
+    wochen: 18,
+    einheiten_pro_woche: 5,
+    zielzeit_min: 200,
+    zielzeit_max: 280,
+    wochen_plan: Array.from({length:18}, (_, i) => ({
+      fokus: ["Aerobic Base", "Wochenvolumen 60 km", "Tempohärte aufbauen", "Regeneration", "Progressionsläufe", "Marathontempo-Blöcke", "Regeneration", "Schwellensteigerung", "Peakblock I", "Peakblock II", "Höchstbelastung", "Regeneration", "Marathonspezifische Vorbereitung", "Letzter 32-km-Lauf", "Taper I", "Taper II", "Anpassungswoche", "Wettkampfwoche"][i],
+      tage: [
+        { typ: "Dauerlauf", dauer: 45 + i*1.5, distanz: 7.5 + i*0.3, beschreibung: "Komfortables GA1" },
+        { typ: "Intervall", dauer: 50, distanz: 8, beschreibung: "Marathontempo-Intervalle" },
+        { typ: "Regeneration", dauer: 30, distanz: 4.5, beschreibung: "Lockerer Trab" },
+        { typ: "Dauerlauf", dauer: 45, distanz: 7, beschreibung: "Mittlere Dauereinheit" },
+        { typ: "Ruhetag", dauer: 0, distanz: 0, beschreibung: "Erholung" },
+        { typ: "Fahrtspiel", dauer: 45, distanz: 7, beschreibung: "Fartlek mit Marathontempo-Abschnitten" },
+        { typ: "Long Run", dauer: 100 + i*6, distanz: 18 + i*0.8, beschreibung: "Langer Lauf mit MP-Einschüben" }
+      ]
+    }))
+  }
+];
+
+// ─── HILFSFUNKTIONEN ──────────────────────────────────────────────
+const TAGE_NAMEN = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+const TAGE_LANG = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
+let currentStep = 1;
+let userData = {};
+let selectedPlan = null;
+
+const ZEIT_KONFIG = {
+  '5km':         { min: 15,  max: 45,  default: 30 },
+  '10km':        { min: 35,  max: 80,  default: 55 },
+  'halbmarathon':{ min: 80,  max: 180, default: 120 },
+  'marathon':    { min: 180, max: 360, default: 240 }
+};
+
+function showPage(page) {
+  document.getElementById('home-page').style.display = page === 'home' ? 'block' : 'none';
+  document.getElementById('wizard-page').style.display = page === 'wizard' ? 'block' : 'none';
+  document.getElementById('result-page').style.display = page === 'result' ? 'block' : 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (page === 'wizard') {
+    currentStep = 1;
+    showStep(1);
+  }
+}
+
+function showStep(n) {
+  document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  document.getElementById('progressBar').style.width = (n / 3 * 100) + '%';
+  document.getElementById('stepLabel').textContent = 'Schritt ' + n + ' von 3';
+  currentStep = n;
+}
+
+function updateZeit() {
+  const dist = document.querySelector('input[name="distanz"]:checked')?.value || '5km';
+  const cfg = ZEIT_KONFIG[dist] || ZEIT_KONFIG['5km'];
+  const slider = document.getElementById('zeitSlider');
+  const v = parseInt(slider.value);
+  const min = Math.floor(v);
+  const sec = Math.round((v - min) * 60);
+  document.getElementById('zeitDisplay').textContent = min + ':' + String(sec).padStart(2, '0');
+}
+
+function updateWochen() {
+  document.getElementById('wochenDisplay').textContent = document.getElementById('wochenSlider').value + ' Wochen';
+}
+
+// Distanz-Buttons aktualisieren den Zeit-Slider
+document.querySelectorAll('input[name="distanz"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const cfg = ZEIT_KONFIG[r.value];
+    const slider = document.getElementById('zeitSlider');
+    slider.min = cfg.min;
+    slider.max = cfg.max;
+    slider.value = cfg.default;
+    updateZeit();
+  });
+});
+
+function validate1() {
+  let ok = true;
+  const groesse = parseInt(document.getElementById('groesse').value);
+  const gewicht = parseInt(document.getElementById('gewicht').value);
+  const geschlecht = document.querySelector('input[name="geschlecht"]:checked');
+
+  const showErr = (id, show) => {
+    document.getElementById('err-' + id).style.display = show ? 'block' : 'none';
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('field-error', show);
+  };
+
+  if (!groesse || groesse < 140 || groesse > 220) { showErr('groesse', true); ok = false; } else showErr('groesse', false);
+  if (!gewicht || gewicht < 40 || gewicht > 200) { showErr('gewicht', true); ok = false; } else showErr('gewicht', false);
+  if (!geschlecht) { showErr('geschlecht', true); ok = false; } else showErr('geschlecht', false);
+  return ok;
+}
+
+function validate2() {
+  const dist = document.querySelector('input[name="distanz"]:checked');
+  document.getElementById('err-distanz').style.display = dist ? 'none' : 'block';
+  return !!dist;
+}
+
+function nextStep(n) {
+  const banner = document.getElementById('errorBanner');
+  banner.style.display = 'none';
+  if (n === 2 && !validate1()) {
+    banner.textContent = 'Bitte fülle alle Pflichtfelder korrekt aus.';
+    banner.style.display = 'block';
+    return;
+  }
+  if (n === 3 && !validate2()) {
+    banner.textContent = 'Bitte wähle deine Zieldistanz.';
+    banner.style.display = 'block';
+    return;
+  }
+  showStep(n);
+}
+
+// ─── MATCHING ────────────────────────────────────────────────────
+function matchPlan(dist, zielzeit, wochen, fitness, einheiten) {
+  const pool = PLAENE.filter(p => p.distanz === dist);
+  if (!pool.length) return PLAENE[0];
+
+  const fitnessMap = { 'Anfänger': 0, 'Fortgeschritten': 1, 'Profi': 2 };
+  const userFit = fitnessMap[fitness] ?? 0;
+
+  const scored = pool.map(p => {
+    const midzeit = (p.zielzeit_min + p.zielzeit_max) / 2;
+    const zeitRange = (p.zielzeit_max - p.zielzeit_min) || 1;
+    const zeitNaehe = Math.max(0, 1 - Math.abs(zielzeit - midzeit) / zeitRange);
+
+    const planFit = fitnessMap[p.fitnesslevel] ?? 0;
+    const fitDiff = Math.abs(userFit - planFit);
+    const fitScore = fitDiff === 0 ? 1 : fitDiff === 1 ? 0.5 : 0;
+
+    const einheitNaehe = Math.max(0, 1 - Math.abs(einheiten - p.einheiten_pro_woche) / 4);
+    const wochenNaehe = Math.max(0, 1 - Math.abs(wochen - p.wochen) / 12);
+
+    const score = zeitNaehe * 0.4 + fitScore * 0.3 + einheitNaehe * 0.2 + wochenNaehe * 0.1;
+    return { plan: p, score };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored[0].plan;
+}
+
+function generatePlan() {
+  userData = {
+    groesse: parseInt(document.getElementById('groesse').value),
+    gewicht: parseInt(document.getElementById('gewicht').value),
+    geschlecht: document.querySelector('input[name="geschlecht"]:checked')?.value,
+    alter: document.getElementById('alter').value || null,
+    ruhepuls: document.getElementById('ruhepuls').value || null,
+    fitness: document.querySelector('input[name="fitness"]:checked')?.value || 'Anfänger',
+    distanz: document.querySelector('input[name="distanz"]:checked')?.value,
+    zielzeit: parseInt(document.getElementById('zeitSlider').value),
+    wochen: parseInt(document.getElementById('wochenSlider').value),
+    einheiten: parseInt(document.getElementById('einheitenSlider').value),
+    trainingstage: [...document.querySelectorAll('.day-cb input:checked')].map(c => c.value),
+    longRunTag: document.getElementById('longRunTag').value
+  };
+
+  selectedPlan = matchPlan(userData.distanz, userData.zielzeit, userData.wochen, userData.fitness, userData.einheiten);
+  renderResult();
+  showPage('result');
+}
+
+function formatZeit(min) {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return h > 0 ? h + ':' + String(m).padStart(2, '0') + ' h' : m + ' Min';
+}
+
+const DIST_LABELS = { '5km': '5 km', '10km': '10 km', 'halbmarathon': 'Halbmarathon', 'marathon': 'Marathon' };
+
+function renderResult() {
+  const p = selectedPlan;
+  const u = userData;
+
+  document.getElementById('resultTitle').textContent = p.name;
+  document.getElementById('resultSubtitle').textContent = `${DIST_LABELS[u.distanz]} · Ziel: ${formatZeit(u.zielzeit)} · ${p.wochen} Wochen`;
+
+  const summaryItems = [
+    { label: 'Größe', val: u.groesse + ' cm' },
+    { label: 'Gewicht', val: u.gewicht + ' kg' },
+    { label: 'Geschlecht', val: u.geschlecht },
+    ...(u.alter ? [{ label: 'Alter', val: u.alter + ' J.' }] : []),
+    { label: 'Level', val: u.fitness },
+    { label: 'Distanz', val: DIST_LABELS[u.distanz] },
+    { label: 'Zielzeit', val: formatZeit(u.zielzeit) },
+    { label: 'Planlänge', val: p.wochen + ' Wo.' },
+    { label: 'Einheiten', val: u.einheiten + '/Woche' }
+  ];
+
+  document.getElementById('userSummary').innerHTML = summaryItems.map(s =>
+    `<div class="summary-pill"><span>${s.label}</span><strong>${s.val}</strong></div>`
+  ).join('');
+
+  document.getElementById('planName').textContent = p.name;
+  document.getElementById('planMeta').textContent = `${p.wochen} Wochen · ${p.einheiten_pro_woche} Einheiten/Woche · Niveau: ${p.fitnesslevel}`;
+
+  const acc = document.getElementById('accordionWrap');
+  acc.innerHTML = '';
+
+  p.wochen_plan.forEach((woche, wi) => {
+    const tageToUse = adaptTage(woche.tage, wi);
+    const div = document.createElement('div');
+    div.className = 'week-item' + (wi === 0 ? ' open' : '');
+    div.innerHTML = `
+      <div class="week-header" onclick="toggleWeek(this)">
+        <div><span class="week-num">WOCHE ${wi + 1}</span><span class="week-focus">${woche.fokus}</span></div>
+        <span class="week-chevron">▼</span>
+      </div>
+      <div class="week-body">
+        ${tageToUse.map((tag, ti) => renderTag(tag, ti)).join('')}
+      </div>`;
+    acc.appendChild(div);
+  });
+}
+
+function adaptTage(originalTage, wochenIndex) {
+  const u = userData;
+  let tage = [...originalTage];
+
+  if (u.trainingstage && u.trainingstage.length > 0) {
+    const newTage = TAGE_NAMEN.map(d => {
+      if (u.trainingstage.includes(d)) {
+        const trainingsTage = tage.filter(t => t.typ !== 'Ruhetag');
+        return trainingsTage.length > 0 ? trainingsTage.shift() : { typ: 'Ruhetag', dauer: 0, distanz: 0, beschreibung: 'Erholung' };
+      } else {
+        return { typ: 'Ruhetag', dauer: 0, distanz: 0, beschreibung: 'Erholung' };
+      }
+    });
+    tage = newTage;
+  }
+
+  if (u.longRunTag) {
+    const longRunIdx = TAGE_NAMEN.indexOf(u.longRunTag);
+    if (longRunIdx >= 0) {
+      const currentLR = tage.findIndex(t => t.typ === 'Long Run');
+      if (currentLR >= 0 && currentLR !== longRunIdx) {
+        const lr = tage[currentLR];
+        const displaced = tage[longRunIdx];
+        tage[longRunIdx] = lr;
+        tage[currentLR] = displaced;
+      }
+    }
+  }
+
+  return tage;
+}
+
+const BADGE_KLASSEN = {
+  'Ruhetag': 'badge-rest',
+  'Dauerlauf': 'badge-dauerlauf',
+  'Intervall': 'badge-intervall',
+  'Long Run': 'badge-longrun',
+  'Regeneration': 'badge-regeneration',
+  'Fahrtspiel': 'badge-fahrtspiel'
+};
+
+function renderTag(tag, ti) {
+  const badge = BADGE_KLASSEN[tag.typ] || 'badge-rest';
+  const details = tag.typ === 'Ruhetag'
+    ? `<small>${tag.beschreibung}</small>`
+    : `<strong>${tag.dauer} Min · ${tag.distanz} km</strong><small>${tag.beschreibung}</small>`;
+  return `<div class="day-row">
+    <div class="day-name">${TAGE_NAMEN[ti]}</div>
+    <span class="day-badge ${badge}">${tag.typ}</span>
+    <div class="day-details">${details}</div>
+  </div>`;
+}
+
+function toggleWeek(header) {
+  header.parentElement.classList.toggle('open');
+}
+
+// ─── PDF-EXPORT ──────────────────────────────────────────────────
+function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+  const p = selectedPlan;
+  const u = userData;
+  let y = 20;
+
+  doc.setFillColor(255, 107, 53);
+  doc.rect(0, 0, 210, 35, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(20);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Fynns Laufcoach – Dein Trainingsplan', 15, 22);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.text(p.name, 15, 30);
+
+  y = 50;
+  doc.setTextColor(30, 30, 30);
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Meine Angaben', 15, y);
+  y += 8;
+
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  const infos = [
+    ['Größe:', u.groesse + ' cm', 'Gewicht:', u.gewicht + ' kg'],
+    ['Geschlecht:', u.geschlecht, 'Fitnesslevel:', u.fitness],
+    ['Distanz:', DIST_LABELS[u.distanz], 'Zielzeit:', formatZeit(u.zielzeit)],
+    ['Planlänge:', p.wochen + ' Wochen', 'Einheiten/Woche:', u.einheiten + 'x'],
+    ...(u.alter ? [['Alter:', u.alter + ' J.', '', '']] : [])
+  ];
+  infos.forEach(row => {
+    doc.setFont('helvetica', 'bold');
+    doc.text(row[0], 15, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(row[1], 45, y);
+    if (row[2]) {
+      doc.setFont('helvetica', 'bold');
+      doc.text(row[2], 105, y);
+      doc.setFont('helvetica', 'normal');
+      doc.text(row[3], 135, y);
+    }
+    y += 6;
+  });
+
+  y += 6;
+  doc.setDrawColor(255, 107, 53);
+  doc.setLineWidth(0.5);
+  doc.line(15, y, 195, y);
+  y += 8;
+
+  p.wochen_plan.forEach((woche, wi) => {
+    if (y > 260) { doc.addPage(); y = 20; }
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(255, 107, 53);
+    doc.text(`Woche ${wi + 1}: ${woche.fokus}`, 15, y);
+    y += 2;
+    doc.setDrawColor(255, 107, 53);
+    doc.setLineWidth(0.3);
+    doc.line(15, y + 1, 195, y + 1);
+    y += 5;
+
+    const tage = adaptTage(woche.tage, wi);
+    tage.forEach((tag, ti) => {
+      if (y > 268) { doc.addPage(); y = 20; }
+      doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(60, 60, 60);
+      doc.text(TAGE_LANG[ti] + ':', 15, y);
+      doc.setFont('helvetica', 'normal');
+      const detail = tag.typ === 'Ruhetag'
+        ? `${tag.typ} – ${tag.beschreibung}`
+        : `${tag.typ} – ${tag.dauer} Min, ${tag.distanz} km – ${tag.beschreibung}`;
+      doc.text(detail, 42, y);
+      y += 5.5;
+    });
+    y += 3;
+  });
+
+  doc.setFontSize(8);
+  doc.setTextColor(150, 150, 150);
+  doc.text('© Fynns Laufcoach – Laufe weiter, laufe besser.', 15, 290);
+
+  const dist = u.distanz.replace('halbmarathon', 'hm');
+  doc.save(`fynns-laufcoach-${dist}-plan.pdf`);
+}
+
+// Init
+updateZeit();
+updateWochen();
+</script>
+</body>
+</html>
