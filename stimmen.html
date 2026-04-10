@@ -5,7 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kundenstimmen – Fynns Laufcoach</title>
 <meta name="description" content="Echte Erfahrungen von Läufern, die mit Fynns Laufcoach ihre Ziele erreicht haben.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://www.fynns-laufcoach.de/stimmen.html">
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://www.fynns-laufcoach.de/stimmen.html">
+  <meta property="og:title"       content="Kundenstimmen – Fynns Laufcoach">
+  <meta property="og:description" content="Über 1.200 Läufer haben mit Fynns Laufcoach ihre Ziele erreicht. Lese echte Erfahrungsberichte von Anfängern und ambitionierten Läufern.">
+  <meta property="og:image"       content="https://www.fynns-laufcoach.de/og-image.png">
+  <meta property="og:locale"      content="de_DE">
+  <meta property="og:site_name"   content="Fynns Laufcoach">
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="Kundenstimmen – Fynns Laufcoach">
+  <meta name="twitter:description" content="Über 1.200 Läufer haben mit Fynns Laufcoach ihre Ziele erreicht. Lese echte Erfahrungsberichte von Anfängern und ambitionierten Läufern.">
+  <meta name="twitter:image"       content="https://www.fynns-laufcoach.de/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -100,15 +116,57 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
   .nav-hamburger { display: flex; }
   .nav-cta { display: none !important; }
 }
+
+/* ─── ACCESSIBILITY ──────────────────────────────────────────── */
+.skip-link {
+  position: absolute; top: -40px; left: 1rem; z-index: 9999;
+  background: var(--orange); color: white; padding: 0.5rem 1rem;
+  border-radius: 0 0 8px 8px; font-weight: 700; font-size: 0.85rem;
+  text-decoration: none; transition: top 0.2s;
+}
+.skip-link:focus { top: 0; }
+/* Fokus-Styles für Tastaturnavigation */
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+}
+/* Radio-Buttons sichtbarer Fokus */
+.radio-btn input:focus-visible + label,
+.dist-btn input:focus-visible + label,
+.day-cb input:focus-visible + label,
+.longrun-btn input:focus-visible + label {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
+/* Slider Fokus */
+input[type=range]:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 4px;
+}
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Zum Inhalt springen</a>
 
 <nav>
   <a href="index.html" class="nav-logo">FYNNS <span>LAUFCOACH</span></a>
   <ul class="nav-links">
     <li><a href="index.html">Startseite</a></li>
     <li><a href="trainingsplan.html">Trainingsplan</a></li>
+    <li><a href="pace-rechner.html">Pace-Rechner</a></li>
     <li><a href="stimmen.html" class="active">Stimmen</a></li>
   </ul>
   <a href="trainingsplan.html" class="nav-cta">Plan erstellen</a>
@@ -119,11 +177,13 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
 <div class="mobile-menu" id="mobileMenu">
   <a href="index.html">Startseite</a>
   <a href="trainingsplan.html">Trainingsplan</a>
+  <a href="pace-rechner.html">Pace-Rechner</a>
   <a href="stimmen.html" class="active">Stimmen</a>
   <a href="impressum.html">Impressum</a>
   <a href="trainingsplan.html" class="mobile-cta">Plan erstellen →</a>
 </div>
 
+<main id="main-content">
 <!-- PAGE HERO -->
 <div class="page-hero">
   <div class="section-label">Was Läufer sagen</div>
@@ -238,12 +298,15 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
   <a href="trainingsplan.html" style="background:white;color:var(--orange);padding:1rem 2.5rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;text-decoration:none;display:inline-block;transition:transform 0.15s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Trainingsplan erstellen →</a>
 </section>
 
+</main>
+
 <footer>
   <div class="footer-inner">
     <div class="footer-logo">FYNNS <span>LAUFCOACH</span></div>
     <div class="footer-links">
       <a href="index.html">Startseite</a>
       <a href="trainingsplan.html">Trainingsplan</a>
+      <a href="pace-rechner.html">Pace-Rechner</a>
       <a href="stimmen.html">Stimmen</a>
       <a href="impressum.html">Impressum</a>
     </div>
