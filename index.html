@@ -92,6 +92,46 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
 .feature-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.75); }
 .feature-item span { color: var(--orange); font-weight: 700; font-size: 1rem; }
 
+
+/* ─── HAMBURGER MENU ─────────────────────────────────────────── */
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center;
+  gap: 5px; cursor: pointer; padding: 4px; background: none; border: none;
+  width: 36px; height: 36px;
+}
+.nav-hamburger span {
+  display: block; height: 2px; background: var(--dark);
+  border-radius: 2px; transition: all 0.3s ease; transform-origin: center;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.mobile-menu {
+  display: none; position: fixed; top: 64px; left: 0; right: 0;
+  background: white; border-bottom: 1px solid var(--border);
+  padding: 1rem 5% 1.5rem; z-index: 99;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  flex-direction: column; gap: 0;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  display: block; padding: 0.85rem 0; color: var(--dark); text-decoration: none;
+  font-weight: 500; font-size: 1rem; border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+.mobile-menu a:last-child { border-bottom: none; }
+.mobile-menu a:hover, .mobile-menu a.active { color: var(--orange); }
+.mobile-menu .mobile-cta {
+  margin-top: 1rem; background: var(--orange); color: white !important;
+  text-align: center; border-radius: 100px; padding: 0.75rem !important;
+  font-weight: 700; border-bottom: none !important;
+}
+.mobile-menu .mobile-cta:hover { background: var(--orange-dark); color: white !important; }
+@media (max-width: 640px) {
+  .nav-links { display: none !important; }
+  .nav-hamburger { display: flex; }
+  .nav-cta { display: none !important; }
+}
 </style>
 </head>
 <body>
@@ -103,7 +143,17 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
     <li><a href="stimmen.html" >Stimmen</a></li>
   </ul>
   <a href="trainingsplan.html" class="nav-cta">Plan erstellen</a>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Menü öffnen" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html" class="active">Startseite</a>
+  <a href="trainingsplan.html">Trainingsplan</a>
+  <a href="stimmen.html">Stimmen</a>
+  <a href="impressum.html">Impressum</a>
+  <a href="trainingsplan.html" class="mobile-cta">Plan erstellen →</a>
+</div>
 
 <!-- HERO -->
 <section style="min-height:100vh;padding-top:64px;background:var(--dark);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;overflow:hidden;">
@@ -242,5 +292,23 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
   </div>
   <div class="footer-copy">© 2025 <strong style="color:#888">Fynns Laufcoach</strong> · Alle Rechte vorbehalten · Laufe weiter, laufe besser.</div>
 </footer>
+
+<script>
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  const btn  = document.getElementById('navHamburger');
+  menu.classList.toggle('open');
+  btn.classList.toggle('open');
+  btn.setAttribute('aria-label', menu.classList.contains('open') ? 'Menü schließen' : 'Menü öffnen');
+}
+document.addEventListener('click', e => {
+  const menu = document.getElementById('mobileMenu');
+  const btn  = document.getElementById('navHamburger');
+  if (menu && btn && menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove('open');
+    btn.classList.remove('open');
+  }
+});
+</script>
 </body>
 </html>
