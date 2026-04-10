@@ -4,7 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Impressum – Fynns Laufcoach</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://www.fynns-laufcoach.de/impressum.html">
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://www.fynns-laufcoach.de/impressum.html">
+  <meta property="og:title"       content="Impressum – Fynns Laufcoach">
+  <meta property="og:description" content="Impressum und rechtliche Angaben für Fynns Laufcoach.">
+  <meta property="og:image"       content="https://www.fynns-laufcoach.de/og-image.png">
+  <meta property="og:locale"      content="de_DE">
+  <meta property="og:site_name"   content="Fynns Laufcoach">
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="Impressum – Fynns Laufcoach">
+  <meta name="twitter:description" content="Impressum und rechtliche Angaben für Fynns Laufcoach.">
+  <meta name="twitter:image"       content="https://www.fynns-laufcoach.de/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -103,16 +119,59 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
   .nav-hamburger { display: flex; }
   .nav-cta { display: none !important; }
 }
+
+/* ─── ACCESSIBILITY ──────────────────────────────────────────── */
+.skip-link {
+  position: absolute; top: -40px; left: 1rem; z-index: 9999;
+  background: var(--orange); color: white; padding: 0.5rem 1rem;
+  border-radius: 0 0 8px 8px; font-weight: 700; font-size: 0.85rem;
+  text-decoration: none; transition: top 0.2s;
+}
+.skip-link:focus { top: 0; }
+/* Fokus-Styles für Tastaturnavigation */
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+}
+/* Radio-Buttons sichtbarer Fokus */
+.radio-btn input:focus-visible + label,
+.dist-btn input:focus-visible + label,
+.day-cb input:focus-visible + label,
+.longrun-btn input:focus-visible + label {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
+/* Slider Fokus */
+input[type=range]:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 4px;
+}
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Zum Inhalt springen</a>
 
 <nav>
   <a href="index.html" class="nav-logo">FYNNS <span>LAUFCOACH</span></a>
   <ul class="nav-links">
     <li><a href="index.html">Startseite</a></li>
     <li><a href="trainingsplan.html">Trainingsplan</a></li>
-    <li><a href="stimmen.html">Stimmen</a></li>
+    <li><a href="pace-rechner.html">Pace-Rechner</a></li>
+    <li><a href="pace-rechner.html">Pace-Rechner</a>
+      <a href="stimmen.html">Stimmen</a></li>
   </ul>
   <a href="trainingsplan.html" class="nav-cta">Plan erstellen</a>
   <button class="nav-hamburger" id="navHamburger" aria-label="Menü öffnen" onclick="toggleMobileMenu()">
@@ -122,11 +181,13 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
 <div class="mobile-menu" id="mobileMenu">
   <a href="index.html">Startseite</a>
   <a href="trainingsplan.html">Trainingsplan</a>
+  <a href="pace-rechner.html">Pace-Rechner</a>
   <a href="stimmen.html">Stimmen</a>
   <a href="impressum.html">Impressum</a>
   <a href="trainingsplan.html" class="mobile-cta">Plan erstellen →</a>
 </div>
 
+<main id="main-content">
 <div class="page-hero">
   <h1>IMPRESSUM</h1>
   <p>Angaben gemäß § 5 TMG</p>
@@ -142,13 +203,13 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
   <div class="imp-section">
     <h2>Angaben gemäß § 5 TMG</h2>
     <div class="imp-box">
-      <p><strong>Josef Heininger</strong></p>
-      <p>Albert-Roßhaupter-Straße 109</p>
-      <p>81369 München</p>
+      <p><strong>Fynn Mustermann</strong></p>
+      <p>Musterstraße 1</p>
+      <p>12345 Musterstadt</p>
       <p>Deutschland</p>
     </div>
     <h3>Kontakt</h3>
-    <p>Telefon: <a href="tel:+4900000000000">+49 89 32 16 8</a></p>
+    <p>Telefon: <a href="tel:+4900000000000">+49 (0) 000 000 000</a></p>
     <p>E-Mail: <a href="/cdn-cgi/l/email-protection#553e3a3b21343e2115332c3b3b267839342033363a34363d7b3130"><span class="__cf_email__" data-cfemail="9af1f5f4eefbf1eedafce3f4f4e9b7f6fbeffcf9f5fbf9f2b4feff">[email&#160;protected]</span></a></p>
   </div>
 
@@ -157,9 +218,9 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
     <h2>Verantwortlich für den Inhalt</h2>
     <p>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:</p>
     <div class="imp-box">
-      <p><strong>Josef Heininger</strong></p>
-      <p>Albert-Roßhaupter-Straße 109</p>
-      <p>81369 München</p>
+      <p><strong>Fynn Mustermann</strong></p>
+      <p>Musterstraße 1</p>
+      <p>12345 Musterstadt</p>
     </div>
   </div>
 
@@ -206,6 +267,8 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
   </div>
 
 </div>
+
+</main>
 
 <footer>
   <div class="footer-inner">
