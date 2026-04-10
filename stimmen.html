@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kundenstimmen – Fynns Laufcoach</title>
+<meta name="description" content="Echte Erfahrungen von Läufern, die mit Fynns Laufcoach ihre Ziele erreicht haben.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #FF6B35; --orange-dark: #e05520; --orange-light: #fff3ee;
+  --dark: #0f0f0f; --gray: #6b6b6b; --light: #f7f5f2; --white: #ffffff; --border: #e8e3dc;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--dark); line-height: 1.6; }
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5%; height: 64px;
+}
+.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; color: var(--dark); text-decoration: none; }
+.nav-logo span { color: var(--orange); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { text-decoration: none; color: var(--gray); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--orange); }
+.nav-cta { background: var(--orange); color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: background 0.2s; text-decoration: none; }
+.nav-cta:hover { background: var(--orange-dark); }
+.page-hero { padding: 8rem 5% 4rem; background: var(--dark); text-align: center; }
+.page-hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem,7vw,5rem); color: white; letter-spacing: 2px; margin-bottom: 1rem; }
+.page-hero p { color: #aaa; font-size: 1.1rem; max-width: 520px; margin: 0 auto; }
+.section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 0.75rem; }
+.testi-grid-full { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+.testi-card {
+  background: var(--light); border-radius: 16px; padding: 1.75rem;
+  border: 1px solid var(--border); position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.testi-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.07); }
+.testi-quote { font-size: 3rem; line-height: 1; color: var(--orange); position: absolute; top: 1rem; right: 1.5rem; font-family: Georgia, serif; opacity: 0.5; }
+.testi-stars { color: var(--orange); font-size: 1rem; margin-bottom: 0.75rem; letter-spacing: 2px; }
+.testi-text { font-size: 0.9rem; color: var(--dark); line-height: 1.7; margin-bottom: 1.25rem; font-style: italic; }
+.testi-name { font-size: 0.8rem; font-weight: 700; color: var(--dark); text-transform: uppercase; letter-spacing: 1px; }
+.testi-sub { font-size: 0.75rem; color: var(--gray); }
+.testi-tag { display: inline-block; background: var(--orange-light); color: var(--orange-dark); font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; margin-bottom: 0.75rem; letter-spacing: 1px; text-transform: uppercase; }
+.stats-bar { display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap; padding: 4rem 5%; background: var(--orange); }
+.stat-item { text-align: center; color: white; }
+.stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; letter-spacing: 1px; line-height: 1; }
+.stat-lbl { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.85; margin-top: 0.25rem; }
+.cta-section { padding: 5rem 5%; background: var(--dark); text-align: center; }
+footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.875rem; border-top: 1px solid #1a1a1a; }
+.footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 2px; color: white; }
+.footer-logo span { color: var(--orange); }
+.footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.footer-links a { color: #aaa; text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+.footer-links a:hover { color: white; }
+.footer-copy { color: #555; font-size: 0.78rem; width: 100%; text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #222; }
+@media (max-width: 640px) { .nav-links { display: none; } .stats-bar { gap: 2rem; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">FYNNS <span>LAUFCOACH</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Startseite</a></li>
+    <li><a href="trainingsplan.html">Trainingsplan</a></li>
+    <li><a href="stimmen.html" class="active">Stimmen</a></li>
+  </ul>
+  <a href="trainingsplan.html" class="nav-cta">Plan erstellen</a>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="section-label">Was Läufer sagen</div>
+  <h1>ECHTE ERGEBNISSE.<br><span style="color:var(--orange);">ECHTE LÄUFER.</span></h1>
+  <p>Über 1.200 Läufer haben bereits mit Fynns Laufcoach ihre Ziele erreicht.</p>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num">1.200+</div><div class="stat-lbl">Trainierte Läufer</div></div>
+  <div class="stat-item"><div class="stat-num">4,9</div><div class="stat-lbl">Ø Bewertung</div></div>
+  <div class="stat-item"><div class="stat-num">39</div><div class="stat-lbl">Pläne verfügbar</div></div>
+  <div class="stat-item"><div class="stat-num">4</div><div class="stat-lbl">Distanzen</div></div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section style="padding:6rem 5%;background:white;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-label">Erfahrungsberichte</div>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.5rem);letter-spacing:1px;margin-bottom:3rem;">Was unsere Nutzer<br>über uns sagen</h2>
+    <div class="testi-grid-full">
+
+      <div class="testi-card">
+        <div class="testi-tag">Halbmarathon</div>
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">Dank Fynns Laufcoach habe ich meinen ersten Halbmarathon in unter 2 Stunden gefinisht. Der Plan war genau auf mein Niveau abgestimmt!</p>
+        <div class="testi-name">Sabrina K.</div>
+        <div class="testi-sub">Halbmarathon · 1:58:32</div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-tag">10 km</div>
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">Ich habe als kompletter Anfänger angefangen und kann jetzt stolz 10 km am Stück laufen. Der Plan war klar strukturiert und gut umsetzbar.</p>
+        <div class="testi-name">Marcus T.</div>
+        <div class="testi-sub">10 km · Erstläufer</div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-tag">Marathon</div>
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★☆</div>
+        <p class="testi-text">Meine Marathon-PB geknackt! Die Kombination aus Intervalltraining und Long Runs war genau richtig. Werde den Plan definitiv wieder nutzen.</p>
+        <div class="testi-name">Jörg W.</div>
+        <div class="testi-sub">Marathon · 3:42:17</div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-tag">5 km</div>
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">Super einfach zu bedienen! Der PDF-Export ist klasse – so habe ich meinen Plan immer dabei, auch ohne Internet.</p>
+        <div class="testi-name">Lena M.</div>
+        <div class="testi-sub">5 km · 23:44</div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-tag">Halbmarathon</div>
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">Nach einer langen Laufpause hat mir der Anfänger-Halbmarathon-Plan geholfen, systematisch wieder einzusteigen. Kein Übertraining, perfekter Aufbau.</p>
+        <div class="testi-name">Klaus R.</div>
+        <div class="testi-sub">Halbmarathon · Wiedereinstieg</div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-tag">10 km</div>
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">Der Intervall-Plan für 10 km ist brutal effektiv. In 10 Wochen von 52 auf 44 Minuten – das hätte ich so nicht erwartet!</p>
+        <div class="testi-name">Tobias F.</div>
+        <div class="testi-sub">10 km · von 52 auf 44 Min</div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-tag">Marathon</div>
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">Der 20-Wochen-Marathonplan war perfekt strukturiert. Die Tapering-Phase hat mir besonders geholfen – ich war am Wettkampftag so frisch wie selten.</p>
+        <div class="testi-name">Andrea S.</div>
+        <div class="testi-sub">Marathon · 4:12:05</div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-tag">5 km</div>
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★☆</div>
+        <p class="testi-text">Als Mutter von zwei Kindern konnte ich nur 3x die Woche trainieren – der Plan war perfekt darauf angepasst. Flexibel und trotzdem effektiv.</p>
+        <div class="testi-name">Melanie H.</div>
+        <div class="testi-sub">5 km · 3x/Woche</div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-tag">10 km</div>
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">Den Kalenderexport nutze ich intensiv – alle Einheiten landen direkt in Google Calendar. Das macht die Planung so viel einfacher.</p>
+        <div class="testi-name">Simon B.</div>
+        <div class="testi-sub">10 km · Tech-Nutzer</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding:5rem 5%;background:var(--orange);text-align:center;">
+  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3rem);color:white;letter-spacing:1px;margin-bottom:1rem;">Werde Teil der Community</h2>
+  <p style="color:rgba(255,255,255,0.85);margin-bottom:2rem;">Erstelle kostenlos deinen Trainingsplan und laufe deine Bestzeit.</p>
+  <a href="trainingsplan.html" style="background:white;color:var(--orange);padding:1rem 2.5rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;text-decoration:none;display:inline-block;transition:transform 0.15s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Trainingsplan erstellen →</a>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">FYNNS <span>LAUFCOACH</span></div>
+    <div class="footer-links">
+      <a href="index.html">Startseite</a>
+      <a href="trainingsplan.html">Trainingsplan</a>
+      <a href="stimmen.html">Stimmen</a>
+      <a href="impressum.html">Impressum</a>
+    </div>
+  </div>
+  <div class="footer-copy">© 2025 <strong style="color:#888">Fynns Laufcoach</strong> · Alle Rechte vorbehalten · Laufe weiter, laufe besser.</div>
+</footer>
+</body>
+</html>
