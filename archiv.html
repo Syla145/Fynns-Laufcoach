@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trainingsplan-Archiv – Fynns Laufcoach</title>
+<meta name="description" content="Alle 63 Trainingspläne für 5 km bis Marathon auf einen Blick. Filtern nach Distanz, Niveau, Einheiten und Wochenlänge.">
+<link rel="canonical" href="https://www.fynns-laufcoach.de/archiv.html">
+<meta property="og:title" content="Trainingsplan-Archiv – Fynns Laufcoach">
+<meta property="og:description" content="Alle 63 Trainingspläne für 5 km bis Marathon. Filtern, vergleichen und direkt starten.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #FF6B35; --orange-dark: #e05520; --orange-light: #fff3ee;
+  --dark: #0f0f0f; --gray: #6b6b6b; --light: #f7f5f2;
+  --white: #ffffff; --border: #e8e3dc;
+  --green: #16a34a; --blue: #2563eb; --purple: #7c3aed; --yellow: #d97706;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(--dark); line-height: 1.6; }
+
+/* ── NAV ─────────────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5%; height: 64px;
+}
+.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; color: var(--dark); text-decoration: none; }
+.nav-logo span { color: var(--orange); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { text-decoration: none; color: var(--gray); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--orange); }
+.nav-cta { background: var(--orange); color: white; padding: 0.5rem 1.25rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; text-decoration: none; transition: background 0.2s; }
+.nav-cta:hover { background: var(--orange-dark); }
+.skip-link { position: absolute; top: -40px; left: 1rem; z-index: 9999; background: var(--orange); color: white; padding: 0.5rem 1rem; border-radius: 0 0 8px 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: top 0.2s; }
+.skip-link:focus { top: 0; }
+:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; border-radius: 4px; }
+
+/* ── HAMBURGER ───────────────────────────────────────────────── */
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; width: 36px; height: 36px; }
+.nav-hamburger span { display: block; height: 2px; background: var(--dark); border-radius: 2px; transition: all 0.3s ease; transform-origin: center; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: white; border-bottom: 1px solid var(--border); padding: 1rem 5% 1.5rem; z-index: 99; box-shadow: 0 8px 32px rgba(0,0,0,0.08); flex-direction: column; }
+.mobile-menu.open { display: flex; }
+.mobile-menu a { display: block; padding: 0.85rem 0; color: var(--dark); text-decoration: none; font-weight: 500; font-size: 1rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.mobile-menu a:last-child { border-bottom: none; }
+.mobile-menu a:hover, .mobile-menu a.active { color: var(--orange); }
+.mobile-menu .mobile-cta { margin-top: 1rem; background: var(--orange); color: white !important; text-align: center; border-radius: 100px; padding: 0.75rem !important; font-weight: 700; border-bottom: none !important; }
+@media (max-width: 640px) { .nav-links { display: none; } .nav-hamburger { display: flex; } .nav-cta { display: none; } }
+
+/* ── PAGE HERO ───────────────────────────────────────────────── */
+.page-hero {
+  padding: 8rem 5% 0; background: var(--dark);
+  text-align: center;
+}
+.section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 0.75rem; }
+.page-hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem,7vw,5rem); color: white; letter-spacing: 2px; margin-bottom: 0.5rem; }
+.page-hero p { color: #aaa; font-size: 1rem; max-width: 520px; margin: 0 auto; }
+.hero-stats { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; padding: 2rem 0 3rem; }
+.hero-stat { text-align: center; }
+.hero-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--orange); letter-spacing: 1px; line-height: 1; }
+.hero-stat-lbl { font-size: 0.72rem; color: #888; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+
+/* ── FILTER BAR ──────────────────────────────────────────────── */
+.filter-wrap {
+  position: sticky; top: 64px; z-index: 50;
+  background: white; border-bottom: 1px solid var(--border);
+  padding: 1rem 5%;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+}
+.filter-inner { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.75rem; }
+.filter-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+.filter-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray); min-width: 80px; }
+.filter-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.chip {
+  padding: 0.35rem 0.9rem; border-radius: 100px; font-size: 0.8rem;
+  font-weight: 600; cursor: pointer; transition: all 0.18s;
+  border: 1.5px solid var(--border); background: white; color: var(--gray);
+  font-family: 'DM Sans', sans-serif; white-space: nowrap;
+}
+.chip:hover { border-color: var(--orange); color: var(--orange-dark); background: var(--orange-light); }
+.chip.active { border-color: var(--orange); background: var(--orange); color: white; }
+.filter-divider { width: 100%; height: 1px; background: var(--border); }
+.filter-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+.results-count { font-size: 0.82rem; color: var(--gray); }
+.results-count strong { color: var(--orange); font-size: 1rem; }
+.btn-reset {
+  padding: 0.35rem 0.9rem; border-radius: 100px; font-size: 0.78rem;
+  font-weight: 600; border: 1.5px solid var(--border); background: white;
+  color: var(--gray); cursor: pointer; transition: all 0.18s; font-family: 'DM Sans', sans-serif;
+}
+.btn-reset:hover { border-color: var(--dark); color: var(--dark); }
+
+/* search */
+.search-wrap { position: relative; }
+.search-wrap input {
+  padding: 0.4rem 0.9rem 0.4rem 2.2rem; border-radius: 100px;
+  border: 1.5px solid var(--border); font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem; color: var(--dark); background: white; width: 220px;
+  transition: border-color 0.2s;
+}
+.search-wrap input:focus { outline: none; border-color: var(--orange); }
+.search-wrap::before { content: '🔍'; position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%); font-size: 0.75rem; pointer-events: none; }
+
+/* ── PLAN GRID ───────────────────────────────────────────────── */
+.archive-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 5% 5rem; }
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/* ── PLAN CARD ───────────────────────────────────────────────── */
+.plan-card {
+  background: white; border: 1.5px solid var(--border); border-radius: 16px;
+  padding: 1.25rem; display: flex; flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  cursor: pointer; position: relative;
+}
+.plan-card:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(0,0,0,0.09); border-color: var(--orange); }
+.plan-card.hidden { display: none; }
+
+/* dist badge top-right */
+.card-dist-badge {
+  position: absolute; top: -1px; right: 16px;
+  font-family: 'Bebas Neue', sans-serif; font-size: 0.75rem; letter-spacing: 1px;
+  padding: 3px 10px; border-radius: 0 0 8px 8px; color: white;
+}
+.dist-5km       .card-dist-badge { background: var(--blue); }
+.dist-10km      .card-dist-badge { background: var(--green); }
+.dist-halbmarathon .card-dist-badge { background: var(--purple); }
+.dist-marathon  .card-dist-badge { background: var(--orange); }
+
+.card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.75rem; padding-top: 0.25rem; }
+.card-level-badge {
+  font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 100px;
+  letter-spacing: 0.5px; text-transform: uppercase;
+}
+.level-Anfänger      .card-level-badge { background: #dbeafe; color: #1d4ed8; }
+.level-Fortgeschritten .card-level-badge { background: #fef9c3; color: #854d0e; }
+.level-Profi         .card-level-badge { background: #fce7f3; color: #9d174d; }
+
+.card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.25rem; letter-spacing: 0.5px; color: var(--dark); margin-bottom: 0.1rem; line-height: 1.2; }
+.card-subtitle { font-size: 0.75rem; color: var(--gray); margin-bottom: 1rem; }
+
+.card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem; }
+.card-stat { background: var(--light); border-radius: 8px; padding: 0.5rem 0.6rem; }
+.card-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--dark); letter-spacing: 0.5px; line-height: 1; }
+.card-stat-lbl { font-size: 0.6rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-top: 1px; }
+
+.card-zielzeit { font-size: 0.78rem; color: var(--gray); margin-bottom: 1rem; }
+.card-zielzeit strong { color: var(--dark); }
+
+/* intensity bar */
+.card-intensity { margin-bottom: 1rem; }
+.intensity-label { font-size: 0.65rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; display: flex; justify-content: space-between; }
+.intensity-bar-bg { height: 4px; background: var(--border); border-radius: 100px; overflow: hidden; }
+.intensity-bar-fill { height: 100%; border-radius: 100px; transition: width 0.4s ease; }
+
+.card-cta {
+  margin-top: auto; width: 100%; padding: 0.6rem; border-radius: 100px;
+  border: 1.5px solid var(--orange); background: transparent; color: var(--orange);
+  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.plan-card:hover .card-cta, .card-cta:hover { background: var(--orange); color: white; }
+
+/* ── EMPTY STATE ─────────────────────────────────────────────── */
+#emptyState {
+  display: none; text-align: center; padding: 5rem 2rem; grid-column: 1/-1;
+}
+#emptyState.show { display: block; }
+.empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+.empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 1px; color: var(--dark); margin-bottom: 0.5rem; }
+.empty-sub { font-size: 0.9rem; color: var(--gray); }
+
+/* ── SORT BAR ────────────────────────────────────────────────── */
+.sort-wrap { display: flex; align-items: center; gap: 0.5rem; }
+.sort-select {
+  padding: 0.35rem 0.75rem; border-radius: 100px; border: 1.5px solid var(--border);
+  font-family: 'DM Sans', sans-serif; font-size: 0.8rem; color: var(--dark);
+  background: white; cursor: pointer; transition: border-color 0.2s;
+}
+.sort-select:focus { outline: none; border-color: var(--orange); }
+.sort-label { font-size: 0.72rem; color: var(--gray); font-weight: 600; }
+
+/* ── FOOTER ──────────────────────────────────────────────────── */
+footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.875rem; }
+.footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 2px; color: white; }
+.footer-logo span { color: var(--orange); }
+.footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.footer-links a { color: #aaa; text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+.footer-links a:hover { color: white; }
+.footer-copy { color: #555; font-size: 0.78rem; width: 100%; text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #222; }
+
+@media (max-width: 768px) {
+  .filter-row { gap: 0.35rem; }
+  .filter-label { min-width: 60px; font-size: 0.65rem; }
+  .chip { padding: 0.28rem 0.7rem; font-size: 0.75rem; }
+  .search-wrap input { width: 160px; }
+  .plan-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .plan-grid { grid-template-columns: 1fr; }
+  .filter-actions { flex-direction: column; align-items: flex-start; }
+  .search-wrap input { width: 100%; }
+}
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Zum Inhalt springen</a>
+
+<nav>
+  <a href="index.html" class="nav-logo">FYNNS <span>LAUFCOACH</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Startseite</a></li>
+    <li><a href="trainingsplan.html">Trainingsplan</a></li>
+    <li><a href="archiv.html" class="active">Archiv</a></li>
+    <li><a href="pace-rechner.html">Pace-Rechner</a></li>
+    <li><a href="stimmen.html">Stimmen</a></li>
+  </ul>
+  <a href="trainingsplan.html" class="nav-cta">Plan erstellen</a>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Menü öffnen" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Startseite</a>
+  <a href="trainingsplan.html">Trainingsplan</a>
+  <a href="archiv.html" class="active">Archiv</a>
+  <a href="pace-rechner.html">Pace-Rechner</a>
+  <a href="stimmen.html">Stimmen</a>
+  <a href="impressum.html">Impressum</a>
+  <a href="trainingsplan.html" class="mobile-cta">Plan erstellen →</a>
+</div>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="section-label">Alle Pläne</div>
+  <h1>TRAININGSPLAN-<span style="color:var(--orange);">ARCHIV</span></h1>
+  <p>63 wissenschaftlich entwickelte Pläne – direkt filtern, vergleichen und starten.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-num">63</div><div class="hero-stat-lbl">Pläne gesamt</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">4</div><div class="hero-stat-lbl">Distanzen</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">3</div><div class="hero-stat-lbl">Niveaus</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">8–20</div><div class="hero-stat-lbl">Wochen</div></div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-wrap" role="search" aria-label="Pläne filtern">
+  <div class="filter-inner">
+
+    <div class="filter-row">
+      <span class="filter-label">Distanz</span>
+      <div class="filter-chips" role="group" aria-label="Distanz wählen">
+        <button class="chip active" data-filter="distanz" data-value="alle" onclick="setFilter('distanz','alle',this)">Alle</button>
+        <button class="chip" data-filter="distanz" data-value="5km"          onclick="setFilter('distanz','5km',this)">🏃 5 km</button>
+        <button class="chip" data-filter="distanz" data-value="10km"         onclick="setFilter('distanz','10km',this)">⚡ 10 km</button>
+        <button class="chip" data-filter="distanz" data-value="halbmarathon" onclick="setFilter('distanz','halbmarathon',this)">🌅 Halbmarathon</button>
+        <button class="chip" data-filter="distanz" data-value="marathon"     onclick="setFilter('distanz','marathon',this)">🏆 Marathon</button>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <span class="filter-label">Niveau</span>
+      <div class="filter-chips" role="group" aria-label="Niveau wählen">
+        <button class="chip active" data-filter="niveau" data-value="alle"            onclick="setFilter('niveau','alle',this)">Alle</button>
+        <button class="chip" data-filter="niveau" data-value="Anfänger"               onclick="setFilter('niveau','Anfänger',this)">Anfänger</button>
+        <button class="chip" data-filter="niveau" data-value="Fortgeschritten"        onclick="setFilter('niveau','Fortgeschritten',this)">Fortgeschritten</button>
+        <button class="chip" data-filter="niveau" data-value="Profi"                  onclick="setFilter('niveau','Profi',this)">Profi</button>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <span class="filter-label">Einheiten</span>
+      <div class="filter-chips" role="group" aria-label="Einheiten pro Woche wählen">
+        <button class="chip active" data-filter="einheiten" data-value="alle" onclick="setFilter('einheiten','alle',this)">Alle</button>
+        <button class="chip" data-filter="einheiten" data-value="2" onclick="setFilter('einheiten','2',this)">2×/Wo</button>
+        <button class="chip" data-filter="einheiten" data-value="3" onclick="setFilter('einheiten','3',this)">3×/Wo</button>
+        <button class="chip" data-filter="einheiten" data-value="4" onclick="setFilter('einheiten','4',this)">4×/Wo</button>
+        <button class="chip" data-filter="einheiten" data-value="5" onclick="setFilter('einheiten','5',this)">5×/Wo</button>
+        <button class="chip" data-filter="einheiten" data-value="6" onclick="setFilter('einheiten','6',this)">6×/Wo</button>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <span class="filter-label">Dauer</span>
+      <div class="filter-chips" role="group" aria-label="Plandauer wählen">
+        <button class="chip active" data-filter="wochen" data-value="alle"  onclick="setFilter('wochen','alle',this)">Alle</button>
+        <button class="chip" data-filter="wochen" data-value="kurz"         onclick="setFilter('wochen','kurz',this)">8–10 Wo.</button>
+        <button class="chip" data-filter="wochen" data-value="mittel"       onclick="setFilter('wochen','mittel',this)">12–14 Wo.</button>
+        <button class="chip" data-filter="wochen" data-value="lang"         onclick="setFilter('wochen','lang',this)">16–20 Wo.</button>
+      </div>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="filter-actions">
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <div class="results-count"><strong id="visibleCount">63</strong> Pläne gefunden</div>
+        <button class="btn-reset" onclick="resetFilters()">✕ Filter zurücksetzen</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+        <div class="search-wrap">
+          <input type="search" id="searchInput" placeholder="Plan suchen…" oninput="applyFilters()" aria-label="Pläne durchsuchen">
+        </div>
+        <div class="sort-wrap">
+          <span class="sort-label">Sortieren:</span>
+          <select class="sort-select" id="sortSelect" onchange="applyFilters()" aria-label="Sortierung">
+            <option value="distanz">Distanz</option>
+            <option value="wochen">Wochen ↑</option>
+            <option value="wochen-desc">Wochen ↓</option>
+            <option value="einheiten">Einheiten ↑</option>
+            <option value="zielzeit">Zielzeit ↑</option>
+            <option value="niveau">Niveau</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PLAN GRID -->
+<main id="main-content">
+<div class="archive-wrap">
+  <div class="plan-grid" id="planGrid">
+    <div id="emptyState">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">Keine Pläne gefunden</div>
+      <p class="empty-sub">Passe die Filter an oder setze sie zurück.</p>
+    </div>
+  </div>
+</div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">FYNNS <span>LAUFCOACH</span></div>
+    <div class="footer-links">
+      <a href="index.html">Startseite</a>
+      <a href="trainingsplan.html">Trainingsplan</a>
+      <a href="archiv.html">Archiv</a>
+      <a href="pace-rechner.html">Pace-Rechner</a>
+      <a href="stimmen.html">Stimmen</a>
+      <a href="impressum.html">Impressum</a>
+    </div>
+  </div>
+  <div class="footer-copy">© 2025 <strong style="color:#888">Fynns Laufcoach</strong> · Alle Rechte vorbehalten</div>
+</footer>
+
+<script>
+// ─── STATE ────────────────────────────────────────────────────────
+const filters = { distanz: 'alle', niveau: 'alle', einheiten: 'alle', wochen: 'alle' };
+let PLAENE = [];
+
+const DIST_LABELS = { '5km':'5 km', '10km':'10 km', 'halbmarathon':'Halbmarathon', 'marathon':'Marathon' };
+const DIST_KM     = { '5km':5, '10km':10, 'halbmarathon':21.0975, 'marathon':42.195 };
+const LEVEL_ORDER = { 'Anfänger':0, 'Fortgeschritten':1, 'Profi':2 };
+const DIST_ORDER  = { '5km':0, '10km':1, 'halbmarathon':2, 'marathon':3 };
+
+function formatZeit(min) {
+  const h = Math.floor(min / 60), m = min % 60;
+  return h > 0 ? h + ':' + String(m).padStart(2,'0') + ' h' : m + ' Min';
+}
+
+// ─── INTENSITY SCORE (0–100) ─────────────────────────────────────
+function intensityScore(p) {
+  // Basierend auf Einheiten + Wochen + Niveau
+  const niv  = LEVEL_ORDER[p.fitnesslevel] || 0;
+  const ein  = p.einheiten_pro_woche;
+  const woc  = p.wochen;
+  // Normalisiert: max score = Profi 6x 20Wo
+  return Math.min(100, Math.round((niv/2 * 40) + (ein/6 * 35) + (woc/20 * 25)));
+}
+
+function intensityColor(score) {
+  if (score < 35) return '#4ade80';
+  if (score < 60) return '#facc15';
+  if (score < 80) return '#fb923c';
+  return '#f87171';
+}
+
+// ─── RENDER CARD ─────────────────────────────────────────────────
+function renderCard(p) {
+  const score    = intensityScore(p);
+  const color    = intensityColor(score);
+  const distCls  = 'dist-' + p.distanz;
+  const levelCls = 'level-' + p.fitnesslevel;
+  const km       = DIST_KM[p.distanz] || 5;
+  // Pace aus Mitte des Zielzeit-Fensters
+  const midzeit  = (p.zielzeit_min + p.zielzeit_max) / 2;
+  const secPerKm = (midzeit * 60) / km;
+  const paceMin  = Math.floor(secPerKm / 60);
+  const paceSec  = Math.round(secPerKm % 60);
+  const pace     = paceMin + ':' + String(paceSec).padStart(2,'0');
+
+  const div = document.createElement('div');
+  div.className = `plan-card ${distCls} ${levelCls}`;
+  div.setAttribute('data-id', p.id);
+  div.setAttribute('tabindex', '0');
+  div.setAttribute('role', 'article');
+  div.setAttribute('aria-label', `${DIST_LABELS[p.distanz]} ${p.fitnesslevel} ${p.wochen} Wochen`);
+
+  div.innerHTML = `
+    <div class="card-dist-badge">${DIST_LABELS[p.distanz]}</div>
+    <div class="card-header">
+      <div class="card-level-badge">${p.fitnesslevel}</div>
+    </div>
+    <div class="card-title">${p.wochen} Wochen · ${p.einheiten_pro_woche}×/Wo</div>
+    <div class="card-subtitle">∅ Pace ~${pace} min/km</div>
+    <div class="card-stats">
+      <div class="card-stat">
+        <div class="card-stat-val">${p.wochen}</div>
+        <div class="card-stat-lbl">Wochen</div>
+      </div>
+      <div class="card-stat">
+        <div class="card-stat-val">${p.einheiten_pro_woche}×</div>
+        <div class="card-stat-lbl">Einheiten/Wo</div>
+      </div>
+    </div>
+    <div class="card-zielzeit">
+      Zielzeit: <strong>${formatZeit(p.zielzeit_min)} – ${formatZeit(p.zielzeit_max)}</strong>
+    </div>
+    <div class="card-intensity">
+      <div class="intensity-label">
+        <span>Intensität</span>
+        <span>${score < 35 ? 'Locker' : score < 60 ? 'Moderat' : score < 80 ? 'Intensiv' : 'Sehr intensiv'}</span>
+      </div>
+      <div class="intensity-bar-bg">
+        <div class="intensity-bar-fill" style="width:${score}%;background:${color};"></div>
+      </div>
+    </div>
+    <button class="card-cta" onclick="openPlan('${p.id}')">Plan öffnen →</button>`;
+
+  div.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openPlan(p.id); });
+  return div;
+}
+
+// ─── OPEN PLAN ────────────────────────────────────────────────────
+function openPlan(id) {
+  const p = PLAENE.find(x => x.id === id);
+  if (!p) return;
+  // Encode as URL params and open trainingsplan.html
+  // We use sensible defaults for trainingstage/longrun
+  const defaults = {
+    gr: 175, gw: 70, ge: 'Männlich', fi: p.fitnesslevel,
+    di: p.distanz,
+    zt: Math.round((p.zielzeit_min + p.zielzeit_max) / 2),
+    wo: p.wochen,
+    ei: p.einheiten_pro_woche,
+    tr: getDefaultTage(p.einheiten_pro_woche),
+    lr: getDefaultLongrun(p.einheiten_pro_woche),
+  };
+  const params = new URLSearchParams(defaults);
+  window.location.href = 'trainingsplan.html?' + params.toString();
+}
+
+function getDefaultTage(n) {
+  const all = ['Di','Mi','Do','Fr','Sa','So','Mo'];
+  return all.slice(0, n).join(',');
+}
+function getDefaultLongrun(n) {
+  const tage = getDefaultTage(n).split(',');
+  return tage[tage.length - 1];
+}
+
+// ─── FILTER LOGIC ─────────────────────────────────────────────────
+function setFilter(key, value, btn) {
+  filters[key] = value;
+  // Update chip active states
+  document.querySelectorAll(`[data-filter="${key}"]`).forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function applyFilters() {
+  const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+  const sortVal   = document.getElementById('sortSelect').value;
+
+  let visible = PLAENE.filter(p => {
+    if (filters.distanz  !== 'alle' && p.distanz           !== filters.distanz)  return false;
+    if (filters.niveau   !== 'alle' && p.fitnesslevel       !== filters.niveau)   return false;
+    if (filters.einheiten !== 'alle' && p.einheiten_pro_woche !== parseInt(filters.einheiten)) return false;
+    if (filters.wochen !== 'alle') {
+      const w = p.wochen;
+      if (filters.wochen === 'kurz'   && (w < 8  || w > 10)) return false;
+      if (filters.wochen === 'mittel' && (w < 12 || w > 14)) return false;
+      if (filters.wochen === 'lang'   && (w < 16 || w > 20)) return false;
+    }
+    if (searchVal) {
+      const haystack = [
+        DIST_LABELS[p.distanz], p.fitnesslevel,
+        p.wochen + ' Wochen', p.einheiten_pro_woche + 'x',
+        formatZeit(p.zielzeit_min), formatZeit(p.zielzeit_max),
+        p.id
+      ].join(' ').toLowerCase();
+      if (!haystack.includes(searchVal)) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  visible.sort((a, b) => {
+    switch(sortVal) {
+      case 'wochen':       return a.wochen - b.wochen || DIST_ORDER[a.distanz] - DIST_ORDER[b.distanz];
+      case 'wochen-desc':  return b.wochen - a.wochen || DIST_ORDER[a.distanz] - DIST_ORDER[b.distanz];
+      case 'einheiten':    return a.einheiten_pro_woche - b.einheiten_pro_woche;
+      case 'zielzeit':     return a.zielzeit_min - b.zielzeit_min;
+      case 'niveau':       return LEVEL_ORDER[a.fitnesslevel] - LEVEL_ORDER[b.fitnesslevel];
+      default: // distanz
+        return DIST_ORDER[a.distanz] - DIST_ORDER[b.distanz] ||
+               LEVEL_ORDER[a.fitnesslevel] - LEVEL_ORDER[b.fitnesslevel] ||
+               a.wochen - b.wochen;
+    }
+  });
+
+  // Re-render grid
+  const grid = document.getElementById('planGrid');
+  // Remove old cards (keep emptyState)
+  [...grid.querySelectorAll('.plan-card')].forEach(c => c.remove());
+
+  visible.forEach(p => grid.appendChild(renderCard(p)));
+
+  const empty = document.getElementById('emptyState');
+  empty.classList.toggle('show', visible.length === 0);
+  document.getElementById('visibleCount').textContent = visible.length;
+}
+
+function resetFilters() {
+  Object.keys(filters).forEach(k => filters[k] = 'alle');
+  document.querySelectorAll('.chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.value === 'alle');
+  });
+  document.getElementById('searchInput').value = '';
+  document.getElementById('sortSelect').value = 'distanz';
+  applyFilters();
+}
+
+// ─── LOAD JSON ────────────────────────────────────────────────────
+fetch('training_plans.json')
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(data => {
+    PLAENE = data;
+    document.getElementById('visibleCount').textContent = PLAENE.length;
+    // Update hero stat
+    document.querySelector('.hero-stat-num').textContent = PLAENE.length;
+    applyFilters();
+  })
+  .catch(err => {
+    document.getElementById('planGrid').innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:4rem 2rem;">
+        <div style="font-size:2.5rem;margin-bottom:1rem;">⚠️</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;margin-bottom:0.5rem;">Pläne konnten nicht geladen werden</div>
+        <p style="color:var(--gray);font-size:0.9rem;">Stelle sicher, dass <code>training_plans.json</code> im selben Ordner liegt.</p>
+      </div>`;
+  });
+
+// ─── HAMBURGER ────────────────────────────────────────────────────
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  const btn  = document.getElementById('navHamburger');
+  menu.classList.toggle('open');
+  btn.classList.toggle('open');
+  btn.setAttribute('aria-label', menu.classList.contains('open') ? 'Menü schließen' : 'Menü öffnen');
+}
+document.addEventListener('click', e => {
+  const menu = document.getElementById('mobileMenu');
+  const btn  = document.getElementById('navHamburger');
+  if (menu && btn && menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove('open'); btn.classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>
