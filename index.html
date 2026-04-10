@@ -1567,13 +1567,64 @@ function closePreview() {
 
 function confirmPreviewPlan() {
   if (previewPlanIndex < 0) return;
-  selectedPlan = top3Plans[previewPlanIndex].plan;
+  const newPlan = top3Plans[previewPlanIndex].plan;
+
+  // Wenn der neue Plan andere Einheitenanzahl hat → Tages-Modal erzwingen
+  if (newPlan.einheiten_pro_woche !== userData.einheiten) {
+    selectedPlan = newPlan;
+    closePreview();
+    // Modal mit der neuen Einheitenzahl vorausfüllen und öffnen
+    openDaysModalForPlan(newPlan.einheiten_pro_woche);
+    return;
+  }
+
+  selectedPlan = newPlan;
   progress = {};
   closePreview();
   renderTop3();
   renderResult();
   switchResultView('list');
   updateShareURL();
+}
+
+function openDaysModalForPlan(requiredEinheiten) {
+  const u = userData;
+  document.getElementById('daysModalSub').innerHTML =
+    `Der gewählte Plan benötigt <strong>${requiredEinheiten} Einheiten/Woche</strong>. Bitte passe deine Trainingstage an.`;
+
+  // Slider auf neue Einheitenzahl setzen und sperren
+  const slider = document.getElementById('daysModalEinheitenSlider');
+  slider.value = requiredEinheiten;
+  slider.disabled = true; // Einheitenzahl ist durch Plan vorgegeben
+  document.getElementById('daysModalEinheitenDisplay').textContent = requiredEinheiten;
+
+  // Checkboxen: aktuelle Tage vorausfüllen, aber User muss ggf. anpassen
+  document.querySelectorAll('#daysModalGrid input[type=checkbox]').forEach(cb => {
+    cb.checked = u.trainingstage.includes(cb.value);
+  });
+
+  // Zu viele? Überschuss abwählen
+  const checked = [...document.querySelectorAll('#daysModalGrid input:checked')];
+  if (checked.length > requiredEinheiten) {
+    checked.slice(requiredEinheiten).forEach(cb => { cb.checked = false; });
+  }
+
+  updateDaysModal();
+
+  // Longrun vorausfüllen
+  setTimeout(() => {
+    const match = document.querySelector(`#daysModalLongrunGrid input[value="${u.longRunTag}"]`);
+    if (match) match.checked = true;
+  }, 50);
+
+  document.getElementById('daysModalError').style.display = 'none';
+  document.getElementById('daysModal').classList.add('open');
+}
+
+function closeDaysModal() {
+  // Slider wieder freigeben falls er gesperrt war
+  document.getElementById('daysModalEinheitenSlider').disabled = false;
+  document.getElementById('daysModal').classList.remove('open');
 }
 
 // buildWeekDays aber für beliebigen Plan (nicht nur selectedPlan)
@@ -1914,7 +1965,8 @@ function updateDaysModal() {
 document.getElementById('daysModalGrid').addEventListener('change', () => updateDaysModal());
 
 function confirmDaysModal() {
-  const n          = parseInt(document.getElementById('daysModalEinheitenSlider').value);
+  const slider     = document.getElementById('daysModalEinheitenSlider');
+  const n          = parseInt(slider.value);
   const checked    = [...document.querySelectorAll('#daysModalGrid input:checked')];
   const longRunTag = document.querySelector('#daysModalLongrunGrid input:checked')?.value;
   const errEl      = document.getElementById('daysModalError');
@@ -1928,15 +1980,16 @@ function confirmDaysModal() {
     errEl.style.display = 'block'; return;
   }
 
-  // userData aktualisieren
   userData.trainingstage = checked.map(cb => cb.value);
   userData.longRunTag    = longRunTag;
   userData.einheiten     = n;
 
-  // Wenn Einheitenzahl geändert: passendsten Plan neu suchen
-  const oldPlan = selectedPlan;
-  selectedPlan  = matchPlan(userData.distanz, userData.zielzeit, userData.wochen, userData.fitness, n);
-  progress      = {};
+  // Nur neuen Plan suchen wenn Slider nicht gesperrt war (freie Anpassung)
+  // Bei gesperrtem Slider (Plan-Wechsel) ist selectedPlan bereits gesetzt
+  if (!slider.disabled) {
+    selectedPlan = matchPlan(userData.distanz, userData.zielzeit, userData.wochen, userData.fitness, n);
+  }
+  progress = {};
 
   closeDaysModal();
   renderTop3();
