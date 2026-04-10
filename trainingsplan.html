@@ -500,13 +500,62 @@ input[type=date]:focus { outline: none; border-color: var(--orange); }
 .nav-logo span { color: var(--orange); }
 .nav-cta { text-decoration: none; }
 .nav-links a.active { color: var(--orange); }
-.footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+
+/* ─── HAMBURGER MENU ─────────────────────────────────────────── */
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center;
+  gap: 5px; cursor: pointer; padding: 4px; background: none; border: none;
+  width: 36px; height: 36px;
+}
+.nav-hamburger span {
+  display: block; height: 2px; background: var(--dark);
+  border-radius: 2px; transition: all 0.3s ease;
+  transform-origin: center;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.mobile-menu {
+  display: none; position: fixed; top: 64px; left: 0; right: 0;
+  background: white; border-bottom: 1px solid var(--border);
+  padding: 1rem 5% 1.5rem; z-index: 99;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  flex-direction: column; gap: 0;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  display: block; padding: 0.85rem 0; color: var(--dark); text-decoration: none;
+  font-weight: 500; font-size: 1rem; border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+.mobile-menu a:last-child { border-bottom: none; }
+.mobile-menu a:hover, .mobile-menu a.active { color: var(--orange); }
+.mobile-menu .mobile-cta {
+  margin-top: 1rem; background: var(--orange); color: white !important;
+  text-align: center; border-radius: 100px; padding: 0.75rem !important;
+  font-weight: 700; border-bottom: none !important;
+}
+.mobile-menu .mobile-cta:hover { background: var(--orange-dark); color: white !important; }
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  .nav-cta { display: none; }
+}
 .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 2px; color: white; }
 .footer-logo span { color: var(--orange); }
 .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
 .footer-links a { color: #aaa; text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
 .footer-links a:hover { color: white; }
 .footer-copy { color: #555; font-size: 0.78rem; width: 100%; text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #222; }
+.dot-pulse {
+  display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--orange);
+  animation: dotPulse 1.2s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40%            { transform: scale(1);   opacity: 1; }
+}
 </style>
 </head>
 <body>
@@ -519,9 +568,51 @@ input[type=date]:focus { outline: none; border-color: var(--orange); }
     <li><a href="stimmen.html">Stimmen</a></li>
   </ul>
   <a href="trainingsplan.html" class="nav-cta">Plan erstellen</a>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Menü öffnen" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Startseite</a>
+  <a href="trainingsplan.html" class="active">Trainingsplan</a>
+  <a href="stimmen.html">Stimmen</a>
+  <a href="impressum.html">Impressum</a>
+  <a href="trainingsplan.html" class="mobile-cta">Plan erstellen →</a>
+</div>
 
-<div id="wizard-page">
+<!-- ─── LADE-OVERLAY ─────────────────────────────────────────────── -->
+<div id="loadingOverlay" style="
+  position:fixed;inset:0;background:var(--light);z-index:200;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;
+">
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:var(--dark);">
+    FYNNS <span style="color:var(--orange);">LAUFCOACH</span>
+  </div>
+  <div style="display:flex;gap:6px;">
+    <span class="dot-pulse" style="animation-delay:0s"></span>
+    <span class="dot-pulse" style="animation-delay:0.18s"></span>
+    <span class="dot-pulse" style="animation-delay:0.36s"></span>
+  </div>
+  <div id="loadingMsg" style="font-size:0.85rem;color:var(--gray);">Trainingspläne werden geladen…</div>
+</div>
+
+<!-- ─── FEHLER-OVERLAY ───────────────────────────────────────────── -->
+<div id="errorOverlay" style="
+  display:none;position:fixed;inset:0;background:var(--light);z-index:200;
+  flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;
+  text-align:center;padding:2rem;
+">
+  <div style="font-size:3rem;">⚠️</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:1px;color:var(--dark);">Pläne konnten nicht geladen werden</div>
+  <p style="font-size:0.9rem;color:var(--gray);max-width:400px;line-height:1.6;" id="errorDetail">
+    Die Datei <code>training_plans.json</code> wurde nicht gefunden. Stelle sicher, dass sie sich im gleichen Ordner wie diese HTML-Datei befindet.
+  </p>
+  <button onclick="location.reload()" style="
+    background:var(--orange);color:white;border:none;padding:0.75rem 2rem;
+    border-radius:100px;font-family:'DM Sans',sans-serif;font-size:0.9rem;
+    font-weight:700;cursor:pointer;
+  ">Erneut versuchen</button>
+</div>
   <div class="wizard-container">
     <div class="wizard-header">
       <div class="section-label">Trainingsplan-Assistent</div>
@@ -823,8 +914,44 @@ function convertPlanFormat(plan) {
   return converted;
 }
 
+// ─── LOCALSTORAGE ────────────────────────────────────────────────
+const LS_KEY = 'fynns_laufcoach_v1';
+
+function saveState() {
+  if (!selectedPlan || !userData.distanz) return;
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      userData,
+      planId   : selectedPlan.id,
+      progress,
+      savedAt  : Date.now()
+    }));
+  } catch(e) { /* Storage voll oder privater Modus */ }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return null;
+    const state = JSON.parse(raw);
+    // Nicht älter als 90 Tage
+    if (Date.now() - state.savedAt > 90 * 24 * 60 * 60 * 1000) {
+      localStorage.removeItem(LS_KEY); return null;
+    }
+    return state;
+  } catch(e) { return null; }
+}
+
+function clearState() {
+  try { localStorage.removeItem(LS_KEY); } catch(e) {}
+}
+
+// ─── JSON LADEN ───────────────────────────────────────────────────
 fetch('training_plans.json')
-  .then(r => r.json())
+  .then(r => {
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.json();
+  })
   .then(data => {
     const fMap = { 'anfaenger':'Anfänger','fortgeschritten':'Fortgeschritten','profi':'Profi' };
     const dMap = { '5k':'5km','10k':'10km' };
@@ -832,9 +959,28 @@ fetch('training_plans.json')
       const normalized = { ...p, fitnesslevel: fMap[p.fitnesslevel] || p.fitnesslevel, distanz: dMap[p.distanz] || p.distanz };
       return convertPlanFormat(normalized);
     });
-    restoreFromURL();
+
+    // Lade-Overlay ausblenden
+    document.getElementById('loadingOverlay').style.display = 'none';
+
+    // Reihenfolge: URL-Parameter → localStorage → leerer Wizard
+    if (new URLSearchParams(window.location.search).get('di')) {
+      restoreFromURL();
+    } else {
+      const saved = loadState();
+      if (saved) restoreFromSaved(saved);
+    }
   })
-  .catch(e => console.error('JSON konnte nicht geladen werden:', e));
+  .catch(err => {
+    console.error('Pläne konnten nicht geladen werden:', err);
+    document.getElementById('loadingOverlay').style.display = 'none';
+    const eo = document.getElementById('errorOverlay');
+    eo.style.display = 'flex';
+    document.getElementById('errorDetail').innerHTML =
+      `Die Datei <code>training_plans.json</code> konnte nicht geladen werden.<br>
+       <small style="color:#999">Fehler: ${err.message}</small><br><br>
+       Stelle sicher, dass sich <code>training_plans.json</code> im selben Ordner wie diese HTML-Datei befindet.`;
+  });
 
 // ─── SEITEN ──────────────────────────────────────────────────────
 function showPage(page) {
@@ -1110,6 +1256,7 @@ function generatePlan() {
   renderResult();
   showPage('result');
   updateShareURL();
+  saveState();
 }
 
 // ─── PLAN-MATCHING ───────────────────────────────────────────────
@@ -1261,11 +1408,10 @@ function toggleDone(key, wi) {
   progress[key] = !progress[key];
   const row = document.getElementById('row-' + key);
   if (row) row.classList.toggle('done', progress[key]);
-
-  // Wochen-Fortschrittsbalken aktualisieren
   const woche = selectedPlan.wochen_plan[wi];
   const tage  = buildWeekDays(woche);
   updateWeekProgress(wi, tage);
+  saveState(); // Fortschritt sofort persistieren
 }
 
 function updateWeekProgress(wi, tage) {
@@ -1492,6 +1638,7 @@ function confirmPreviewPlan() {
   renderResult();
   switchResultView('list');
   updateShareURL();
+  saveState();
 }
 
 function openDaysModalForPlan(requiredEinheiten) {
@@ -1761,7 +1908,6 @@ function showToast(msg) {
 function restoreFromURL() {
   const params = new URLSearchParams(window.location.search);
   if (!params.get('di')) return;
-  // Warte bis PLAENE geladen sind
   const tryRestore = (attempts) => {
     if (!PLAENE.length && attempts > 0) { setTimeout(() => tryRestore(attempts - 1), 300); return; }
     userData = {
@@ -1785,6 +1931,21 @@ function restoreFromURL() {
     showPage('result');
   };
   tryRestore(15);
+}
+
+function restoreFromSaved(state) {
+  userData     = state.userData;
+  progress     = state.progress || {};
+  selectedPlan = PLAENE.find(p => p.id === state.planId) ||
+                 matchPlan(userData.distanz, userData.zielzeit, userData.wochen, userData.fitness, userData.einheiten);
+  if (!selectedPlan) return;
+
+  renderTop3();
+  renderResult();
+  showPage('result');
+
+  // Hinweis einblenden
+  showToast('✓ Dein letzter Plan wurde wiederhergestellt');
 }
 
 // ─── TRAININGSTAGE-ANPASSUNGS-MODAL ─────────────────────────────
@@ -1902,6 +2063,7 @@ function confirmDaysModal() {
   renderTop3();
   renderResult();
   updateShareURL();
+  saveState();
   showToast('✓ Trainingstage aktualisiert');
 }
 
@@ -1909,9 +2071,31 @@ function confirmDaysModal() {
 updateZeit();
 updateWochen();
 onEinheitenChange();
-// Mindestdatum für Datepicker = heute + 8 Wochen
 const minDate = new Date(); minDate.setDate(minDate.getDate() + 56);
 document.getElementById('wettkampfDatum').min = minDate.toISOString().split('T')[0];
+
+// Hamburger-Menü
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  const btn  = document.getElementById('navHamburger');
+  menu.classList.toggle('open');
+  btn.classList.toggle('open');
+  btn.setAttribute('aria-label', menu.classList.contains('open') ? 'Menü schließen' : 'Menü öffnen');
+}
+// Schließen bei Klick außerhalb
+document.addEventListener('click', e => {
+  const menu = document.getElementById('mobileMenu');
+  const btn  = document.getElementById('navHamburger');
+  if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove('open');
+    btn.classList.remove('open');
+  }
+});
+
+// "Neuen Plan erstellen" → State löschen
+document.querySelectorAll('[onclick*="showPage(\'wizard\')"]').forEach(el => {
+  el.addEventListener('click', () => { clearState(); history.replaceState(null,'',location.pathname); });
+});
 
 </script>
 </body>
