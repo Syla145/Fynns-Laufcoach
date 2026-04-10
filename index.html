@@ -345,6 +345,45 @@ input[type=date]:focus { outline: none; border-color: var(--orange); }
   grid-template-columns: repeat(7, 1fr);
   gap: 4px;
 }
+.cal-week-row {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 6px;
+  margin-bottom: 4px;
+  align-items: start;
+}
+.cal-week-label {
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: flex-end; padding: 4px 8px 4px 0;
+  border-right: 2px solid var(--border);
+  min-height: 70px;
+}
+.cal-week-label .wl-num {
+  font-size: 0.62rem; font-weight: 700; color: var(--gray);
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.cal-week-label .wl-fokus {
+  font-size: 0.65rem; font-weight: 700; color: var(--orange);
+  text-align: right; line-height: 1.3; margin-top: 2px;
+  word-break: break-word;
+}
+.cal-week-cells {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
+}
+.cal-dow-row {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+.cal-dow-spacer { /* empty space under week label column */ }
+.cal-dow-headers { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+@media (max-width: 640px) {
+  .cal-week-label { display: none; }
+  .cal-week-row { grid-template-columns: 1fr; }
+  .cal-dow-row { grid-template-columns: 1fr; }
+  .cal-dow-spacer { display: none; }
+}
 .cal-dow {
   text-align: center; font-size: 0.65rem; font-weight: 700;
   color: var(--gray); text-transform: uppercase; letter-spacing: 1px;
@@ -768,9 +807,45 @@ input[type=date]:focus { outline: none; border-color: var(--orange); }
 
     <div class="result-actions">
       <button class="btn-new" onclick="showPage('wizard')">← Neuen Plan erstellen</button>
+      <button class="btn-pdf" style="background:#16a34a;" onclick="openDaysModal()">📆 Trainingstage anpassen</button>
       <button class="btn-pdf" onclick="exportPDF()">PDF exportieren ↓</button>
       <button class="btn-pdf" style="background:#2563eb;" onclick="exportICS()">📅 Kalender (.ics)</button>
       <button class="btn-pdf" style="background:#7c3aed;" onclick="shareURL()">🔗 Teilen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Trainingstage-Anpassungs-Modal -->
+<div class="modal-overlay" id="daysModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeDaysModal()">✕</button>
+    <div class="modal-title">Trainingstage anpassen</div>
+    <div class="modal-sub" id="daysModalSub"></div>
+    <div class="form-group" style="margin-top:1rem;">
+      <label>Einheiten pro Woche: <span id="daysModalEinheitenDisplay" style="color:var(--orange);font-weight:700;"></span></label>
+      <input type="range" id="daysModalEinheitenSlider" min="2" max="6" value="3" step="1" oninput="onDaysModalEinheitenChange()">
+    </div>
+    <div class="form-group">
+      <label>Trainingstage wählen <span id="daysModalCounterBadge"></span></label>
+      <div class="days-counter" id="daysModalCounterText"></div>
+      <div class="days-grid" id="daysModalGrid">
+        <div class="day-cb"><input type="checkbox" id="dm-mo" value="Mo"><label for="dm-mo">Mo</label></div>
+        <div class="day-cb"><input type="checkbox" id="dm-di" value="Di"><label for="dm-di">Di</label></div>
+        <div class="day-cb"><input type="checkbox" id="dm-mi" value="Mi"><label for="dm-mi">Mi</label></div>
+        <div class="day-cb"><input type="checkbox" id="dm-do" value="Do"><label for="dm-do">Do</label></div>
+        <div class="day-cb"><input type="checkbox" id="dm-fr" value="Fr"><label for="dm-fr">Fr</label></div>
+        <div class="day-cb"><input type="checkbox" id="dm-sa" value="Sa"><label for="dm-sa">Sa</label></div>
+        <div class="day-cb"><input type="checkbox" id="dm-so" value="So"><label for="dm-so">So</label></div>
+      </div>
+    </div>
+    <div class="form-group" id="daysModalLongrunGroup" style="display:none;">
+      <label>Longrun-Tag <span style="font-weight:400;color:var(--gray);text-transform:none;letter-spacing:0;">(aus deinen Trainingstagen)</span></label>
+      <div class="longrun-grid" id="daysModalLongrunGrid"></div>
+    </div>
+    <div class="error-msg" id="daysModalError" style="margin-top:0.5rem;"></div>
+    <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">
+      <button class="btn-pdf" style="background:var(--orange);" onclick="confirmDaysModal()">Übernehmen ✓</button>
+      <button class="btn-back" onclick="closeDaysModal()">Abbrechen</button>
     </div>
   </div>
 </div>
@@ -1172,22 +1247,10 @@ function getTop3Plans(dist, zielzeit, wochen, fitness, einheiten) {
   const pool = PLAENE.filter(p => p.distanz === dist);
   if (!pool.length) return [];
 
-  // Bevorzuge Pläne mit exakt passenden Einheiten, dann ±1
-  const exact  = pool.filter(p => p.einheiten_pro_woche === einheiten);
-  const plusOne= pool.filter(p => Math.abs(p.einheiten_pro_woche - einheiten) === 1);
-  const rest   = pool.filter(p => Math.abs(p.einheiten_pro_woche - einheiten) > 1);
-
-  // Score innerhalb jeder Gruppe, dann zusammenführen
-  const scoreAndSort = arr => scorePlans(arr, zielzeit, wochen, fitness, einheiten)
-    .sort((a, b) => b.score - a.score);
-
-  const ranked = [...scoreAndSort(exact), ...scoreAndSort(plusOne), ...scoreAndSort(rest)];
-  // Deduplizieren (nach Plan-Objekt)
-  const seen = new Set();
-  return ranked.filter(item => {
-    if (seen.has(item.plan)) return false;
-    seen.add(item.plan); return true;
-  }).slice(0, 3);
+  // Alle Pläne scoren und rein nach Score sortieren – höchster Score = Platz 1
+  const scored = scorePlans(pool, zielzeit, wochen, fitness, einheiten);
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, 3);
 }
 
 // ─── PLAN RENDERN ────────────────────────────────────────────────
@@ -1536,101 +1599,98 @@ function buildWeekDaysForPlan(woche, plan) {
 // ─── KALENDERANSICHT ─────────────────────────────────────────────
 function renderCalendar() {
   const p         = selectedPlan;
-  const u         = userData;
   const startDate = getCalendarStartDate();
   const inner     = document.getElementById('calendarInner');
   inner.innerHTML = '';
 
-  // 1. Alle Trainingstage mit echtem Datum in eine flache Liste sammeln
+  // Alle 7 Tage × alle Wochen als flaches Array mit echtem Datum
   const allDays = [];
   p.wochen_plan.forEach((woche, wi) => {
     const tage = buildWeekDays(woche);
     tage.forEach((tag, ti) => {
       const d = new Date(startDate);
       d.setDate(d.getDate() + wi * 7 + ti);
-      allDays.push({ date: d, tag, wi, ti });
+      allDays.push({ date: d, tag, wi, ti, fokus: woche.fokus });
     });
   });
-
   if (!allDays.length) return;
 
-  // 2. Alle betroffenen Monate ermitteln
-  const firstDay = allDays[0].date;
-  const lastDay  = allDays[allDays.length - 1].date;
+  // Pro Woche rendern (Wochenlabel links + 7 Tages-Zellen)
+  // Monatsheader: immer wenn sich der Monat ändert
+  let lastMonth = -1;
 
-  // Durch jeden Monat iterieren
-  let cur = new Date(firstDay.getFullYear(), firstDay.getMonth(), 1);
-  const endMonth = new Date(lastDay.getFullYear(), lastDay.getMonth(), 1);
+  p.wochen_plan.forEach((woche, wi) => {
+    const weekDays = allDays.filter(d => d.wi === wi); // 7 Tage
 
-  while (cur <= endMonth) {
-    const year  = cur.getFullYear();
-    const month = cur.getMonth();
-    const monatStr = cur.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+    // Monatsheader prüfen
+    const firstDay   = weekDays[0].date;
+    const curMonth   = firstDay.getMonth();
+    const curYear    = firstDay.getFullYear();
 
-    const monthDiv = document.createElement('div');
-    monthDiv.className = 'cal-month';
-    monthDiv.innerHTML = `<div class="cal-month-title">${monatStr}</div>`;
+    if (curMonth !== lastMonth) {
+      lastMonth = curMonth;
+      const mLabel = firstDay.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
 
-    const grid = document.createElement('div');
-    grid.className = 'cal-grid';
-    // Wochentags-Header
-    ['Mo','Di','Mi','Do','Fr','Sa','So'].forEach(d => {
-      const hd = document.createElement('div');
-      hd.className = 'cal-dow'; hd.textContent = d;
-      grid.appendChild(hd);
-    });
+      // Monats-Titel + DOW-Header
+      const mTitle = document.createElement('div');
+      mTitle.className = 'cal-month-title';
+      mTitle.style.marginTop = wi === 0 ? '0' : '1.5rem';
+      mTitle.textContent = mLabel;
+      inner.appendChild(mTitle);
 
-    // Erster Tag des Monats: leere Zellen davor
-    const firstOfMonth = new Date(year, month, 1);
-    const leadingEmpty = (firstOfMonth.getDay() + 6) % 7; // 0=Mo
-    for (let e = 0; e < leadingEmpty; e++) {
-      const em = document.createElement('div');
-      em.className = 'cal-cell empty';
-      grid.appendChild(em);
+      // DOW-Header-Zeile (mit Platz für Label links)
+      const dowRow = document.createElement('div');
+      dowRow.className = 'cal-dow-row';
+      const dowSpacer = document.createElement('div');
+      dowSpacer.className = 'cal-dow-spacer';
+      const dowHeaders = document.createElement('div');
+      dowHeaders.className = 'cal-dow-headers';
+      ['Mo','Di','Mi','Do','Fr','Sa','So'].forEach(d => {
+        const hd = document.createElement('div');
+        hd.className = 'cal-dow'; hd.textContent = d;
+        dowHeaders.appendChild(hd);
+      });
+      dowRow.appendChild(dowSpacer);
+      dowRow.appendChild(dowHeaders);
+      inner.appendChild(dowRow);
     }
 
-    // Tage des Monats durchgehen
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    for (let d = 1; d <= daysInMonth; d++) {
-      const cellDate = new Date(year, month, d);
-      const today    = new Date(); today.setHours(0,0,0,0);
-      const isToday  = cellDate.toDateString() === today.toDateString();
+    // Wochen-Zeile
+    const weekRow = document.createElement('div');
+    weekRow.className = 'cal-week-row';
 
-      // Passendes allDays-Eintrag suchen
-      const entry = allDays.find(e =>
-        e.date.getFullYear() === year &&
-        e.date.getMonth()    === month &&
-        e.date.getDate()     === d
-      );
+    // Linkes Label
+    const label = document.createElement('div');
+    label.className = 'cal-week-label';
+    label.innerHTML = `<div class="wl-num">Wo. ${wi + 1}</div><div class="wl-fokus">${woche.fokus}</div>`;
+    weekRow.appendChild(label);
+
+    // 7 Tages-Zellen
+    const cells = document.createElement('div');
+    cells.className = 'cal-week-cells';
+
+    weekDays.forEach(({ date, tag, wi: wIdx, ti }) => {
+      const today  = new Date(); today.setHours(0,0,0,0);
+      const isToday = date.toDateString() === today.toDateString();
+      const key    = `w${wIdx}_t${ti}`;
+      const isDone = !!progress[key];
+      const badge  = BADGE_KLASSEN[tag.typ] || 'badge-rest';
 
       const cell = document.createElement('div');
-      if (entry) {
-        const { tag, wi, ti } = entry;
-        const key    = `w${wi}_t${ti}`;
-        const isDone = !!progress[key];
-        const badge  = BADGE_KLASSEN[tag.typ] || 'badge-rest';
-        cell.className = `cal-cell${isToday ? ' today' : ''}${isDone ? ' done-cell' : ''}`;
-        cell.innerHTML = `
-          <div class="cal-day-num">${d}</div>
-          ${isDone ? '<div class="done-mark">✓</div>' : ''}
-          ${tag.typ !== 'Ruhetag'
-            ? `<span class="cal-badge ${badge}">${tag.typ}</span>
-               <div class="cal-detail">${tag.dauer_min}Min · ${tag.distanz_km}km</div>`
-            : ''}`;
-      } else {
-        // Tag außerhalb des Trainingsplans
-        cell.className = `cal-cell${isToday ? ' today' : ''}`;
-        cell.innerHTML = `<div class="cal-day-num" style="opacity:0.35">${d}</div>`;
-      }
-      grid.appendChild(cell);
-    }
+      cell.className = `cal-cell${isToday ? ' today' : ''}${isDone ? ' done-cell' : ''}`;
+      cell.innerHTML = `
+        <div class="cal-day-num">${date.getDate()}</div>
+        ${isDone ? '<div class="done-mark">✓</div>' : ''}
+        ${tag.typ !== 'Ruhetag'
+          ? `<span class="cal-badge ${badge}">${tag.typ}</span>
+             <div class="cal-detail">${tag.dauer_min}Min · ${tag.distanz_km}km</div>`
+          : ''}`;
+      cells.appendChild(cell);
+    });
 
-    monthDiv.appendChild(grid);
-    inner.appendChild(monthDiv);
-
-    // Nächster Monat
-    cur = new Date(year, month + 1, 1);
-  }
+    weekRow.appendChild(cells);
+    inner.appendChild(weekRow);
+  });
 }
 
 function getCalendarStartDate() {
@@ -1767,6 +1827,122 @@ function restoreFromURL() {
     showPage('result');
   };
   tryRestore(15);
+}
+
+// ─── TRAININGSTAGE-ANPASSUNGS-MODAL ─────────────────────────────
+function openDaysModal() {
+  const u = userData;
+  const p = selectedPlan;
+  document.getElementById('daysModalSub').textContent =
+    `Aktuell: ${u.trainingstage.join(', ')} · Longrun: ${u.longRunTag} · Plan braucht ${p.einheiten_pro_woche} Einheiten/Wo.`;
+
+  // Slider auf aktuelle Einheiten setzen
+  const slider = document.getElementById('daysModalEinheitenSlider');
+  slider.value = u.einheiten;
+  document.getElementById('daysModalEinheitenDisplay').textContent = u.einheiten;
+
+  // Checkboxen vorausfüllen
+  document.querySelectorAll('#daysModalGrid input[type=checkbox]').forEach(cb => {
+    cb.checked = u.trainingstage.includes(cb.value);
+  });
+  updateDaysModal();
+
+  // Longrun vorausfüllen
+  setTimeout(() => {
+    const lr = document.querySelector('#daysModalLongrunGrid input[name="daysModalLongrun"]');
+    if (lr) {
+      const match = document.querySelector(`#daysModalLongrunGrid input[value="${u.longRunTag}"]`);
+      if (match) match.checked = true;
+    }
+  }, 50);
+
+  document.getElementById('daysModalError').style.display = 'none';
+  document.getElementById('daysModal').classList.add('open');
+}
+
+function closeDaysModal() {
+  document.getElementById('daysModal').classList.remove('open');
+}
+
+function onDaysModalEinheitenChange() {
+  const n = parseInt(document.getElementById('daysModalEinheitenSlider').value);
+  document.getElementById('daysModalEinheitenDisplay').textContent = n;
+  // Zu viele ausgewählt? Abwählen
+  const checked = [...document.querySelectorAll('#daysModalGrid input:checked')];
+  if (checked.length > n) checked.slice(n).forEach(cb => { cb.checked = false; });
+  updateDaysModal();
+}
+
+function updateDaysModal() {
+  const n        = parseInt(document.getElementById('daysModalEinheitenSlider').value);
+  const checked  = [...document.querySelectorAll('#daysModalGrid input:checked')];
+  const count    = checked.length;
+  const atMax    = count >= n;
+
+  document.querySelectorAll('#daysModalGrid .day-cb').forEach(wrapper => {
+    const cb = wrapper.querySelector('input');
+    if (!cb.checked && atMax) { wrapper.classList.add('disabled'); cb.disabled = true; }
+    else { wrapper.classList.remove('disabled'); cb.disabled = false; }
+  });
+
+  const txt = document.getElementById('daysModalCounterText');
+  if (count === 0)      txt.innerHTML = `Bitte wähle genau <span class="needed">${n}</span> Tage.`;
+  else if (count < n)   txt.innerHTML = `<span class="count">${count}</span> von <span class="needed">${n}</span> – noch ${n - count} weitere.`;
+  else                  txt.innerHTML = `✓ <span class="count">${count}</span> Tage ausgewählt.`;
+
+  const badge = document.getElementById('daysModalCounterBadge');
+  badge.innerHTML = count === n ? '<span class="days-ok-badge">✓</span>' : '';
+
+  // Longrun-Buttons aktualisieren
+  const group = document.getElementById('daysModalLongrunGroup');
+  const grid  = document.getElementById('daysModalLongrunGrid');
+  const selectedDays = checked.map(cb => cb.value);
+  if (selectedDays.length === 0) { group.style.display = 'none'; return; }
+  group.style.display = 'block';
+  const currentLR = document.querySelector('#daysModalLongrunGrid input:checked')?.value;
+  grid.innerHTML = selectedDays.map(tag => `
+    <div class="longrun-btn">
+      <input type="radio" name="daysModalLongrun" id="dmlr-${tag}" value="${tag}" ${tag === currentLR ? 'checked' : ''}>
+      <label for="dmlr-${tag}">${TAGE_LANG[TAGE_NAMEN.indexOf(tag)]}</label>
+    </div>`).join('');
+  if (!currentLR || !selectedDays.includes(currentLR)) {
+    const first = grid.querySelector('input');
+    if (first) first.checked = true;
+  }
+}
+
+document.getElementById('daysModalGrid').addEventListener('change', () => updateDaysModal());
+
+function confirmDaysModal() {
+  const n          = parseInt(document.getElementById('daysModalEinheitenSlider').value);
+  const checked    = [...document.querySelectorAll('#daysModalGrid input:checked')];
+  const longRunTag = document.querySelector('#daysModalLongrunGrid input:checked')?.value;
+  const errEl      = document.getElementById('daysModalError');
+
+  if (checked.length !== n) {
+    errEl.textContent = `Bitte wähle genau ${n} Trainingstage.`;
+    errEl.style.display = 'block'; return;
+  }
+  if (!longRunTag) {
+    errEl.textContent = 'Bitte wähle einen Longrun-Tag.';
+    errEl.style.display = 'block'; return;
+  }
+
+  // userData aktualisieren
+  userData.trainingstage = checked.map(cb => cb.value);
+  userData.longRunTag    = longRunTag;
+  userData.einheiten     = n;
+
+  // Wenn Einheitenzahl geändert: passendsten Plan neu suchen
+  const oldPlan = selectedPlan;
+  selectedPlan  = matchPlan(userData.distanz, userData.zielzeit, userData.wochen, userData.fitness, n);
+  progress      = {};
+
+  closeDaysModal();
+  renderTop3();
+  renderResult();
+  updateShareURL();
+  showToast('✓ Trainingstage aktualisiert');
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────
