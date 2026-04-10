@@ -527,29 +527,29 @@ input[type=date]:focus { outline: none; border-color: var(--orange); }
         <div class="testi-quote">"</div>
         <div class="testi-stars">★★★★★</div>
         <p class="testi-text">Dank Fynns Laufcoach habe ich meinen ersten Halbmarathon in unter 2 Stunden gefinisht. Der Plan war genau auf mein Niveau abgestimmt!</p>
-        <div class="testi-name">Sabrina K.</div>
-        <div class="testi-sub">Halbmarathon · 1:58:32</div>
+        <div class="testi-name">Fynn M.</div>
+        <div class="testi-sub">Halbmarathon · 1:58:32 · Fortgeschritten</div>
       </div>
       <div class="testi-card">
         <div class="testi-quote">"</div>
         <div class="testi-stars">★★★★★</div>
         <p class="testi-text">Ich habe als kompletter Anfänger angefangen und kann jetzt stolz 10 km am Stück laufen. Der Plan war klar strukturiert und gut umsetzbar.</p>
-        <div class="testi-name">Marcus T.</div>
-        <div class="testi-sub">10 km · Erstläufer</div>
+        <div class="testi-name">Lena V.</div>
+        <div class="testi-sub">10 km · 1:10:35 · Anfänger</div>
       </div>
       <div class="testi-card">
         <div class="testi-quote">"</div>
         <div class="testi-stars">★★★★☆</div>
         <p class="testi-text">Meine Marathon-PB geknackt! Die Kombination aus Intervalltraining und Long Runs war genau richtig. Werde den Plan definitiv wieder nutzen.</p>
         <div class="testi-name">Jörg W.</div>
-        <div class="testi-sub">Marathon · 3:42:17</div>
+        <div class="testi-sub">Marathon · 3:42:17 · Forotgeschritten</div>
       </div>
       <div class="testi-card">
         <div class="testi-quote">"</div>
         <div class="testi-stars">★★★★★</div>
         <p class="testi-text">Super einfach zu bedienen! Der PDF-Export ist klasse – so habe ich meinen Plan immer dabei, auch ohne Internet.</p>
         <div class="testi-name">Lena M.</div>
-        <div class="testi-sub">5 km · 23:44</div>
+        <div class="testi-sub">5 km · 23:44 · Anfänger</div>
       </div>
     </div>
   </section>
@@ -1535,91 +1535,120 @@ function buildWeekDaysForPlan(woche, plan) {
 
 // ─── KALENDERANSICHT ─────────────────────────────────────────────
 function renderCalendar() {
-  const p = selectedPlan;
-  const u = userData;
+  const p         = selectedPlan;
+  const u         = userData;
   const startDate = getCalendarStartDate();
-  const inner = document.getElementById('calendarInner');
+  const inner     = document.getElementById('calendarInner');
   inner.innerHTML = '';
 
+  // 1. Alle Trainingstage mit echtem Datum in eine flache Liste sammeln
+  const allDays = [];
   p.wochen_plan.forEach((woche, wi) => {
-    const weekStart = new Date(startDate);
-    weekStart.setDate(weekStart.getDate() + wi * 7);
-    // Monatstitel
-    const monat = weekStart.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
-    const lastInner = inner.lastElementChild;
-    const lastTitle = lastInner?.querySelector('.cal-month-title')?.textContent;
-    let monthDiv;
-    if (!lastTitle || lastTitle !== monat) {
-      monthDiv = document.createElement('div');
-      monthDiv.className = 'cal-month';
-      monthDiv.innerHTML = `<div class="cal-month-title">${monat}</div>
-        <div class="cal-grid">
-          ${['Mo','Di','Mi','Do','Fr','Sa','So'].map(d => `<div class="cal-dow">${d}</div>`).join('')}
-        </div>`;
-      inner.appendChild(monthDiv);
-    } else {
-      monthDiv = lastInner;
-    }
-    const grid = monthDiv.querySelector('.cal-grid');
-
-    // Lücken auffüllen am Monatsstart
-    const dayOfWeek = (weekStart.getDay() + 6) % 7; // 0=Mo
-    if (!lastTitle || lastTitle !== monat) {
-      // Fill leading empty cells only for first week of this month
-      const firstOfMonth = new Date(weekStart.getFullYear(), weekStart.getMonth(), 1);
-      const firstDow = (firstOfMonth.getDay() + 6) % 7;
-      // Only add empties if this is the real first occurrence
-      if (wi === 0 || weekStart.getDate() <= 7) {
-        for (let e = 0; e < firstDow; e++) {
-          const empty = document.createElement('div');
-          empty.className = 'cal-cell empty';
-          grid.appendChild(empty);
-        }
-      }
-    }
-
     const tage = buildWeekDays(woche);
     tage.forEach((tag, ti) => {
-      const cellDate = new Date(weekStart);
-      cellDate.setDate(cellDate.getDate() + ti);
-      const today = new Date(); today.setHours(0,0,0,0);
-      const isToday = cellDate.toDateString() === today.toDateString();
-      const key = `w${wi}_t${ti}`;
-      const isDone = !!progress[key];
-      const badge = BADGE_KLASSEN[tag.typ] || 'badge-rest';
-      const cell = document.createElement('div');
-      cell.className = `cal-cell${isToday ? ' today' : ''}${isDone ? ' done-cell' : ''}`;
-      cell.innerHTML = `
-        <div class="cal-day-num">${cellDate.getDate()}</div>
-        ${isDone ? '<div class="done-mark">✓</div>' : ''}
-        ${tag.typ !== 'Ruhetag'
-          ? `<span class="cal-badge ${badge}">${tag.typ}</span>
-             <div class="cal-detail">${tag.dauer_min}Min · ${tag.distanz_km}km</div>`
-          : ''}`;
-      grid.appendChild(cell);
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + wi * 7 + ti);
+      allDays.push({ date: d, tag, wi, ti });
     });
   });
+
+  if (!allDays.length) return;
+
+  // 2. Alle betroffenen Monate ermitteln
+  const firstDay = allDays[0].date;
+  const lastDay  = allDays[allDays.length - 1].date;
+
+  // Durch jeden Monat iterieren
+  let cur = new Date(firstDay.getFullYear(), firstDay.getMonth(), 1);
+  const endMonth = new Date(lastDay.getFullYear(), lastDay.getMonth(), 1);
+
+  while (cur <= endMonth) {
+    const year  = cur.getFullYear();
+    const month = cur.getMonth();
+    const monatStr = cur.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+
+    const monthDiv = document.createElement('div');
+    monthDiv.className = 'cal-month';
+    monthDiv.innerHTML = `<div class="cal-month-title">${monatStr}</div>`;
+
+    const grid = document.createElement('div');
+    grid.className = 'cal-grid';
+    // Wochentags-Header
+    ['Mo','Di','Mi','Do','Fr','Sa','So'].forEach(d => {
+      const hd = document.createElement('div');
+      hd.className = 'cal-dow'; hd.textContent = d;
+      grid.appendChild(hd);
+    });
+
+    // Erster Tag des Monats: leere Zellen davor
+    const firstOfMonth = new Date(year, month, 1);
+    const leadingEmpty = (firstOfMonth.getDay() + 6) % 7; // 0=Mo
+    for (let e = 0; e < leadingEmpty; e++) {
+      const em = document.createElement('div');
+      em.className = 'cal-cell empty';
+      grid.appendChild(em);
+    }
+
+    // Tage des Monats durchgehen
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (let d = 1; d <= daysInMonth; d++) {
+      const cellDate = new Date(year, month, d);
+      const today    = new Date(); today.setHours(0,0,0,0);
+      const isToday  = cellDate.toDateString() === today.toDateString();
+
+      // Passendes allDays-Eintrag suchen
+      const entry = allDays.find(e =>
+        e.date.getFullYear() === year &&
+        e.date.getMonth()    === month &&
+        e.date.getDate()     === d
+      );
+
+      const cell = document.createElement('div');
+      if (entry) {
+        const { tag, wi, ti } = entry;
+        const key    = `w${wi}_t${ti}`;
+        const isDone = !!progress[key];
+        const badge  = BADGE_KLASSEN[tag.typ] || 'badge-rest';
+        cell.className = `cal-cell${isToday ? ' today' : ''}${isDone ? ' done-cell' : ''}`;
+        cell.innerHTML = `
+          <div class="cal-day-num">${d}</div>
+          ${isDone ? '<div class="done-mark">✓</div>' : ''}
+          ${tag.typ !== 'Ruhetag'
+            ? `<span class="cal-badge ${badge}">${tag.typ}</span>
+               <div class="cal-detail">${tag.dauer_min}Min · ${tag.distanz_km}km</div>`
+            : ''}`;
+      } else {
+        // Tag außerhalb des Trainingsplans
+        cell.className = `cal-cell${isToday ? ' today' : ''}`;
+        cell.innerHTML = `<div class="cal-day-num" style="opacity:0.35">${d}</div>`;
+      }
+      grid.appendChild(cell);
+    }
+
+    monthDiv.appendChild(grid);
+    inner.appendChild(monthDiv);
+
+    // Nächster Monat
+    cur = new Date(year, month + 1, 1);
+  }
 }
 
 function getCalendarStartDate() {
-  // Wenn Wettkampfdatum vorhanden, rückrechnen; sonst nächsten Montag
   const u = userData;
   if (u.wettkampfDatum) {
+    // Rückrechnen vom Wettkampftag
     const race = new Date(u.wettkampfDatum);
-    const weeks = selectedPlan.wochen;
-    race.setDate(race.getDate() - weeks * 7);
-    // Auf Montag ausrichten
-    const dow = (race.getDay() + 6) % 7;
+    race.setDate(race.getDate() - selectedPlan.wochen * 7);
+    // Auf den nächsten Montag ausrichten
+    const dow = (race.getDay() + 6) % 7; // 0=Mo
     race.setDate(race.getDate() - dow);
     return race;
   }
-  const d = new Date();
-  const dow = (d.getDay() + 6) % 7;
-  d.setDate(d.getDate() - dow + (dow === 0 ? 0 : 7 - dow + 1));
-  // Nächsten Montag
-  const day = d.getDay();
-  const diff = day === 1 ? 0 : (8 - day) % 7;
-  d.setDate(d.getDate() + diff);
+  // Kein Wettkampfdatum → nächsten Montag ab heute
+  const d   = new Date(); d.setHours(0,0,0,0);
+  const dow = (d.getDay() + 6) % 7; // 0=Mo
+  const toNextMonday = dow === 0 ? 0 : 7 - dow;
+  d.setDate(d.getDate() + toNextMonday);
   return d;
 }
 
