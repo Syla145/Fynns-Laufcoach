@@ -63,6 +63,46 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
 .footer-links a:hover { color: white; }
 .footer-copy { color: #555; font-size: 0.78rem; width: 100%; text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #222; }
 @media (max-width: 640px) { .nav-links { display: none; } }
+
+/* ─── HAMBURGER MENU ─────────────────────────────────────────── */
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center;
+  gap: 5px; cursor: pointer; padding: 4px; background: none; border: none;
+  width: 36px; height: 36px;
+}
+.nav-hamburger span {
+  display: block; height: 2px; background: var(--dark);
+  border-radius: 2px; transition: all 0.3s ease; transform-origin: center;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.mobile-menu {
+  display: none; position: fixed; top: 64px; left: 0; right: 0;
+  background: white; border-bottom: 1px solid var(--border);
+  padding: 1rem 5% 1.5rem; z-index: 99;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  flex-direction: column; gap: 0;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  display: block; padding: 0.85rem 0; color: var(--dark); text-decoration: none;
+  font-weight: 500; font-size: 1rem; border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+.mobile-menu a:last-child { border-bottom: none; }
+.mobile-menu a:hover, .mobile-menu a.active { color: var(--orange); }
+.mobile-menu .mobile-cta {
+  margin-top: 1rem; background: var(--orange); color: white !important;
+  text-align: center; border-radius: 100px; padding: 0.75rem !important;
+  font-weight: 700; border-bottom: none !important;
+}
+.mobile-menu .mobile-cta:hover { background: var(--orange-dark); color: white !important; }
+@media (max-width: 640px) {
+  .nav-links { display: none !important; }
+  .nav-hamburger { display: flex; }
+  .nav-cta { display: none !important; }
+}
 </style>
 </head>
 <body>
@@ -75,7 +115,17 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
     <li><a href="stimmen.html">Stimmen</a></li>
   </ul>
   <a href="trainingsplan.html" class="nav-cta">Plan erstellen</a>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Menü öffnen" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Startseite</a>
+  <a href="trainingsplan.html">Trainingsplan</a>
+  <a href="stimmen.html">Stimmen</a>
+  <a href="impressum.html">Impressum</a>
+  <a href="trainingsplan.html" class="mobile-cta">Plan erstellen →</a>
+</div>
 
 <div class="page-hero">
   <h1>IMPRESSUM</h1>
@@ -92,14 +142,14 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
   <div class="imp-section">
     <h2>Angaben gemäß § 5 TMG</h2>
     <div class="imp-box">
-      <p><strong>Fynn Mustermann</strong></p>
-      <p>Musterstraße 1</p>
-      <p>12345 Musterstadt</p>
+      <p><strong>Josef Heininger</strong></p>
+      <p>Albert-Roßhaupter-Straße 109</p>
+      <p>81369 München</p>
       <p>Deutschland</p>
     </div>
     <h3>Kontakt</h3>
-    <p>Telefon: <a href="tel:+4900000000000">+49 (0) 000 000 000</a></p>
-    <p>E-Mail: <a href="mailto:kontakt@fynns-laufcoach.de">kontakt@fynns-laufcoach.de</a></p>
+    <p>Telefon: <a href="tel:+4900000000000">+49 89 32 16 8</a></p>
+    <p>E-Mail: <a href="/cdn-cgi/l/email-protection#553e3a3b21343e2115332c3b3b267839342033363a34363d7b3130"><span class="__cf_email__" data-cfemail="9af1f5f4eefbf1eedafce3f4f4e9b7f6fbeffcf9f5fbf9f2b4feff">[email&#160;protected]</span></a></p>
   </div>
 
   <!-- VERANTWORTLICH FÜR DEN INHALT -->
@@ -107,9 +157,9 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
     <h2>Verantwortlich für den Inhalt</h2>
     <p>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:</p>
     <div class="imp-box">
-      <p><strong>Fynn Mustermann</strong></p>
-      <p>Musterstraße 1</p>
-      <p>12345 Musterstadt</p>
+      <p><strong>Josef Heininger</strong></p>
+      <p>Albert-Roßhaupter-Straße 109</p>
+      <p>81369 München</p>
     </div>
   </div>
 
@@ -145,7 +195,7 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
     <p>Beim PDF-Export wird die Bibliothek jsPDF von einem CDN (Cloudflare) geladen. Dabei kann deine IP-Adresse protokolliert werden. Weitere Informationen findest du in der <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Datenschutzerklärung von Cloudflare</a>.</p>
 
     <h3>Auskunft, Löschung, Sperrung</h3>
-    <p>Da wir keine personenbezogenen Daten erheben oder speichern, entfallen die Rechte auf Auskunft, Löschung und Sperrung. Bei Fragen wende dich an: <a href="mailto:kontakt@fynns-laufcoach.de">kontakt@fynns-laufcoach.de</a></p>
+    <p>Da wir keine personenbezogenen Daten erheben oder speichern, entfallen die Rechte auf Auskunft, Löschung und Sperrung. Bei Fragen wende dich an: <a href="/cdn-cgi/l/email-protection#640f0b0a10050f1024021d0a0a174908051102070b05070c4a0001"><span class="__cf_email__" data-cfemail="1e7571706a7f756a5e786770706d33727f6b787d717f7d76307a7b">[email&#160;protected]</span></a></p>
   </div>
 
   <!-- STREITSCHLICHTUNG -->
@@ -162,13 +212,4 @@ footer { background: var(--dark); color: #aaa; padding: 3rem 5%; font-size: 0.87
     <div class="footer-logo">FYNNS <span>LAUFCOACH</span></div>
     <div class="footer-links">
       <a href="index.html">Startseite</a>
-      <a href="trainingsplan.html">Trainingsplan</a>
-      <a href="stimmen.html">Stimmen</a>
-      <a href="impressum.html">Impressum</a>
-    </div>
-  </div>
-  <div class="footer-copy">© 2025 <strong style="color:#888">Fynns Laufcoach</strong> · Alle Rechte vorbehalten · Laufe weiter, laufe besser.</div>
-</footer>
-
-</body>
-</html>
+      <a href="trainingsplan.html">Trai
